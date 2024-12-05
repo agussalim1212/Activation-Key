@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8C8C38FC-03C7-4845-B966-D4DE2FE1C555}</ProjectGuid>
+    <ProjectGuid>{A25AF6B1-F1A6-4A0E-989E-CA61C126D865}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>ActivationKey</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
