@@ -1,0 +1,101 @@
+﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{D9034D82-3C96-4F9E-95ED-0691D6FF3ABA}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <NoStandardLibraries>false</NoStandardLibraries>
+    <AssemblyName>KeyGen</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>KeyGen</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GenLic\Program.cs" />
+    <Compile Include="Properties\KeyGenAssemblyInfo.cs" />
+    <Compile Include="System.ComponentModel\AssemblyMessageFormatter.cs" />
+    <Compile Include="System.ComponentModel\ModuleMessageFormatter.cs" />
+    <Compile Include="System.ComponentModel\ModuleMessageFormatterConverter.cs" />
+    <Compile Include="System.ComponentModel\Win32FormatMessageFlags.cs" />
+    <Compile Include="System.ComponentModel\Win32MessageFormatter.cs" />
+    <Compile Include="System.ComponentModel\Win32MessageFormatterConverter.cs" />
+    <Compile Include="System.Ini\AssemblyMessageAttribute.cs" />
+    <Compile Include="System.Ini\IInitializer.cs" />
+    <Compile Include="System.Ini\ModuleStringAttribute.cs" />
+    <Compile Include="System.Ini\ResourceAttribute.cs" />
+    <Compile Include="System.Ini\Win32ErrorMessageAttribute.cs" />
+    <Compile Include="System.IO\PathsInfo.cs" />
+    <Compile Include="System.Management.WMI\NetworkAdapterConfigurationInfo.cs" />
+    <Compile Include="System.Management.WMI\ProcessorInfo.cs" />
+    <Compile Include="System.Resourses\ResourceFile.cs" />
+    <Compile Include="System.Windows.Forms\DialogBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="System.Windows.Forms\GenLicForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="System.Windows.Forms\IUserControl.cs" />
+    <Compile Include="System.Windows.Forms\PasswordForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="System.Windows.Forms\TextControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="System\Extensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ActivationKey.csproj">
+      <Project>{a25af6b1-f1a6-4a0e-989e-ca61c126d865}</Project>
+      <Name>ActivationKey</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="System.Windows.Forms\GenLicForm.resx">
+      <DependentUpon>GenLicForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
+  <ProjectExtensions>
+    <VisualStudio AllowExistingFolder="true" />
+  </ProjectExtensions>
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)Bin\"</PostBuildEvent>
+  </PropertyGroup>
+</Project>
