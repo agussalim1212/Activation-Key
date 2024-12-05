@@ -190,7 +190,7 @@ namespace System.Text
             int xLength = Math.Min(bitsCount, 8 - currentBitInBytePos);
             if (xLength != 0)
             {
-                result = ((ulong)data[currentBytePos] << 0b111000 + currentBitInBytePos) >> 0x40 - xLength <<
+                result = ((ulong)data[currentBytePos] << 0x38 + currentBitInBytePos) >> 0x40 - xLength <<
                          bitsCount - xLength;
 
                 currentBytePos += Math.DivRem(currentBitInBytePos + xLength, 8, out currentBitInBytePos);
@@ -228,7 +228,7 @@ namespace System.Text
                 int xLength = Math.Min(bitsCount, 8 - currentBitInBytePos);
                 if (xLength != 0)
                 {
-                    byte x1 = (byte)(value << 64 - bitsCount >> 56 + currentBitInBytePos);
+                    byte x1 = (byte)(value << 0x40 - bitsCount >> 0x38 + currentBitInBytePos);
                     data[currentBytePos] |= x1;
 
                     currentBytePos += Math.DivRem(currentBitInBytePos + xLength, 8, out currentBitInBytePos);

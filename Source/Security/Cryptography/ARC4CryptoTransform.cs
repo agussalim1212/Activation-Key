@@ -4,17 +4,17 @@
 
 •   Description.
 
-    ARC4CryptoTransform  implements and    provides methods  for
-    encrypting   and  decrypting    data using  a   modified RC4
-    algorithm. Used by default    to  generate  activation keys.
+   ARC4CryptoTransform  implements and    provides methods  for
+   encrypting   and  decrypting    data using  a   modified RC4
+   algorithm. Used by default    to  generate  activation keys.
 
-    Despite  the known vulnerabilities  of RC4, such  as leaking
-    key information and the possibility of attacking  weak keys,
-    it is sufficient for the purposes of this project, since the
-    length of the encrypted  data,  as a rule, does not exceed a
-    few    bytes. To    improve    cryptographic   strength,  an
-    initialization vector and  skipping the first 512 bytes were
-    implemented.
+   Despite  the known vulnerabilities  of RC4, such  as leaking
+   key information and the possibility of attacking  weak keys,
+   it is sufficient for the purposes of this project, since the
+   length of the encrypted  data,  as a rule, does not exceed a
+   few    bytes. To    improve    cryptographic   strength,  an
+   initialization vector and  skipping the first 512 bytes were
+   implemented.
 
 ***************************************************************/
 
@@ -23,29 +23,29 @@ using static System.InternalTools;
 namespace System.Security.Cryptography
 {
     // Implements a modified version of the RC4 encryption algorithm.
-    internal sealed class ARC4CryptoTransform : ICryptoTransform
+    internal sealed unsafe class ARC4CryptoTransform : ICryptoTransform
     {
         // All LCR multiplier values.
-        private static readonly byte[] _A = 
+        private static readonly byte[] _A =
         {
-            0x09, 0x0D, 0x11, 0x15, 0x19, 0x1d, 0x21, 0x25, 
+            0x09, 0x0D, 0x11, 0x15, 0x19, 0x1d, 0x21, 0x25,
             0x29, 0x2d, 0x31, 0x35, 0x39, 0x3d, 0x41, 0x45,
-            0x49, 0x4d, 0x51, 0x55, 0x59, 0x5d, 0x61, 0x65, 
+            0x49, 0x4d, 0x51, 0x55, 0x59, 0x5d, 0x61, 0x65,
             0x69, 0x6d, 0x71, 0x75, 0x79, 0x7d, 0x81, 0x85,
-            0x89, 0x8d, 0x91, 0x95, 0x99, 0x9d, 0xa1, 0xa5, 
+            0x89, 0x8d, 0x91, 0x95, 0x99, 0x9d, 0xa1, 0xa5,
             0xa9, 0xad, 0xb1, 0xb5, 0xb9, 0xbd, 0xc1, 0xc5,
-            0xc9, 0xcd, 0xd1, 0xd5, 0xd9, 0xdd, 0xe1, 0xe5, 
+            0xc9, 0xcd, 0xd1, 0xd5, 0xd9, 0xdd, 0xe1, 0xe5,
             0xe9, 0xed, 0xf1, 0xf5, 0xf9
         };
-        
+
         // All LCR increment values.
-        private static readonly byte[] _C = 
+        private static readonly byte[] _C =
         {
-            0x05, 0x07, 0x0B, 0xD, 0x11, 0x13, 0x17, 0x1d, 
+            0x05, 0x07, 0x0B, 0xD, 0x11, 0x13, 0x17, 0x1d,
             0x1f, 0x25, 0x29, 0x2b, 0x2f, 0x35, 0x3b, 0x3d,
-            0x43, 0x47, 0x49, 0x4f, 0x53, 0x59, 0x61, 0x65, 
+            0x43, 0x47, 0x49, 0x4f, 0x53, 0x59, 0x61, 0x65,
             0x67, 0x6b, 0x6d, 0x71, 0x7f, 0x83, 0x89, 0x8b,
-            0x95, 0x97, 0x9d, 0xa3, 0xa7, 0xad, 0xb3, 0xb5, 
+            0x95, 0x97, 0x9d, 0xa3, 0xa7, 0xad, 0xb3, 0xb5,
             0xbf, 0xc1, 0xc5, 0xc7, 0xd3, 0xdf, 0xe3, 0xe5,
             0xe9, 0xef, 0xf1, 0xfb
         };
@@ -94,10 +94,10 @@ namespace System.Security.Cryptography
                 // Shift the IV for the second state array.
                 for (int i = 0; i < 4; i++)
                     ivPtr[i] = (byte)((ivPtr[i] + 128) & 0xFF);
-                
+
                 // Rotate the IV for further modification.
                 byte swap = ivPtr[0];
-                for (int i = 0; i < 3; i++) 
+                for (int i = 0; i < 3; i++)
                     ivPtr[i] = ivPtr[i + 1];
                 ivPtr[3] = swap;
                 LCR(s2Ptr, ivPtr);
@@ -150,7 +150,7 @@ namespace System.Security.Cryptography
         // The Key Scheduling Algorithm (KSA) used in RC4 to initialize the state array.
         private static void KSA(byte* sblock, byte* key, int keyLength, ref int x, ref int y)
         {
-            if (keyLength < 1) 
+            if (keyLength < 1)
                 return;
 
             for (int i = 0, j = 0; i < 256; i++)
@@ -245,22 +245,19 @@ namespace System.Security.Cryptography
         private void CheckDisposed()
         {
             if (_disposed)
-                throw new ObjectDisposedException(nameof(ARC4CryptoTransform),GetResourceString("ObjectDisposed_Generic"));
+                throw new ObjectDisposedException(nameof(ARC4CryptoTransform), GetResourceString("ObjectDisposed_Generic"));
         }
 
         // Releases resources used by the class.
         public void Dispose()
         {
-            _sblock.Clear();
-            _key.Clear();
-            _iv.Clear();
+            _s1.Clear();
+            _s2.Clear();
 
-            _sblock = null;
-            _key = null;
-            _iv = null;
+            _s1 = null;
+            _s2 = null;
 
-            _x = 0;
-            _y = 0;
+            _x1 = _y1 = _x2 = _y2 = 0;
 
             _disposed = true;
         }

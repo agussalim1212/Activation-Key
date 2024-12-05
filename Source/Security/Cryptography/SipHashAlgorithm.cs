@@ -140,7 +140,7 @@ namespace System.Security.Cryptography
                         SipRound();
                         SipRound();
 
-                        @byte += 8;
+                        @byte += 4;
                     }
 
                     for (int i = 0; i < tailCount; ++i)
