@@ -46,8 +46,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("© NG256 2021-2024")] // Copyright.
 [assembly: AssemblyTrademark("NG256® Activation Key®")] // Trademark.
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("2.1.2412.0023")]
-[assembly: AssemblyFileVersion("2.1.2412.0023")]
+[assembly: AssemblyVersion("2.1.2412.0002")]
+[assembly: AssemblyFileVersion("2.1.2412.0002")]
 #if DEBUG
 [assembly: InternalsVisibleTo("Test")]
 [assembly: AssemblyConfiguration("Debug")]
@@ -61,10 +61,10 @@ using System.Runtime.InteropServices;
 #if COMVISIBLE
 [assembly: ComVisible(true)]
 [assembly: ApplicationName("Activation Key")] // COM application name.
-[assembly: ApplicationID("bd25db63-218c-40af-92d1-8f02b4e9a355")]
+[assembly: ApplicationID("8174d929-d3d4-4aa6-8197-56c589912c27")]
 #else
 [assembly: ComVisible(false)]
 #endif
 // The following GUID serves to identify the type library if this project will be visible to COM 
-[assembly: Guid("28cdc5b3-3a32-413f-80ad-1a68da1871c8")]
+[assembly: Guid("138e9ccd-369e-4d83-ac84-3fccb2f7027a")]
 
