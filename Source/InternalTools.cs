@@ -33,7 +33,6 @@
 using Microsoft.Win32;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -265,6 +264,35 @@ namespace System
             }
 
             return true;
+        }
+
+        // A function that helps create a cryptographic provider instance.
+        internal static T CreateSymmetricAlgorithm<T>() where T : SymmetricAlgorithm
+        {
+            Type type = typeof(T);
+            MethodInfo createMethod = type.GetMethod("Create", BindingFlags.Static | BindingFlags.Public, null, new Type[0], null);
+
+            return createMethod != null
+                ?
+                // Calling the static Create method without arguments if it exists.
+                (T)createMethod.Invoke(null, null)
+                :
+                // Otherwise, create an instance through Activator.
+                Activator.CreateInstance<T>();
+        }
+
+        internal static T CreateHashAlgorithm<T>() where T : HashAlgorithm
+        {
+            Type type = typeof(T);
+            MethodInfo createMethod = type.GetMethod("Create", BindingFlags.Static | BindingFlags.Public, null, new Type[0], null);
+
+            return createMethod != null
+                ?
+                // Calling the static Create method without arguments if it exists.
+                (T)createMethod.Invoke(null, null)
+                :
+                // Otherwise, create an instance through Activator.
+                Activator.CreateInstance<T>();
         }
 
         // Compares two arrays using the specified comparer.
