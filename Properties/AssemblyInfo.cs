@@ -46,8 +46,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("© NG256 2021-2024")] // Copyright.
 [assembly: AssemblyTrademark("NG256® Activation Key®")] // Trademark.
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("2.0.2412.0022")]
-[assembly: AssemblyFileVersion("2.0.2412.0022")]
+[assembly: AssemblyVersion("2.0.2412.0023")]
+[assembly: AssemblyFileVersion("2.0.2412.0023")]
 #if DEBUG
 [assembly: InternalsVisibleTo("Test")]
 [assembly: AssemblyConfiguration("Debug")]
