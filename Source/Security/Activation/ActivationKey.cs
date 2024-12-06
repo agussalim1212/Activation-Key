@@ -293,15 +293,115 @@ namespace System.Security.Activation
         #region Methods
 
         /// <summary>
+        /// Generates an <see cref="ActivationKey"/> based on the data and expiration date
+        /// bound to the specified environment parameters using specified cryptographic algorithms.
+        /// </summary>
+        /// <typeparam name="TSymmetricAlgorithm">Generic SymmetricAlgorithm type that will be used to encrypt data.
+        /// This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
+        /// </typeparam>
+        /// <typeparam name="THashAlgorithm">The generic HashAlgorithm type that will be used to calculate the hash of the data.
+        /// This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
+        /// </typeparam>
+        /// <param name="expirationDate">The key expiration date.</param>
+        /// <param name="data">Data that will be included in the activation key.</param>
+        /// <param name="environment">Environment parameters that will be used to generate the activation key.
+        /// These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// </param>
+        /// <returns>Created activation key.</returns>
+        public static ActivationKey Generate<TSymmetricAlgorithm, THashAlgorithm>(DateTime expirationDate, object[] data,
+            params object[] environment)
+            where TSymmetricAlgorithm : SymmetricAlgorithm
+            where THashAlgorithm : HashAlgorithm
+        {
+            using (var encryptor = CreateEncryptor<TSymmetricAlgorithm, THashAlgorithm>(environment))
+            {
+                return encryptor.Generate(expirationDate, data);
+            }
+        }
+
+        /// <summary>
+        /// Generates an <see cref="ActivationKey"/> that will never expire based on the data
+        /// bound to the specified environment parameters using specified cryptographic algorithms.
+        /// </summary>
+        /// <typeparam name="TSymmetricAlgorithm">Generic SymmetricAlgorithm type that will be used to encrypt data.
+        /// This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
+        /// </typeparam>
+        /// <typeparam name="THashAlgorithm">The generic HashAlgorithm type that will be used to calculate the hash of the data.
+        /// This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
+        /// </typeparam>
+        /// <param name="data">Data that will be included in the activation key.</param>
+        /// <param name="environment">Environment parameters that will be used to generate the activation key.
+        /// These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// </param>
+        /// <returns>Created activation key.</returns>
+        public static ActivationKey Generate<TSymmetricAlgorithm, THashAlgorithm>(object[] data,
+            params object[] environment)
+            where TSymmetricAlgorithm : SymmetricAlgorithm
+            where THashAlgorithm : HashAlgorithm
+        {
+            using (var encryptor = CreateEncryptor<TSymmetricAlgorithm, THashAlgorithm>(environment))
+            {
+                return encryptor.Generate(DateTime.MaxValue, data);
+            }
+        }
+
+        /// <summary>
+        /// Generates an <see cref="ActivationKey"/> based on the data and expiration date
+        /// bound to the specified environment parameters using specified cryptographic algorithms.
+        /// </summary>
+        /// <param name="expirationDate">The key expiration date.</param>
+        /// <param name="data">Data that will be included in the activation key.</param>
+        /// <param name="environment">Environment parameters that will be used to generate the activation key.
+        /// These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// </param>
+        /// <returns>Created activation key.</returns>
+        public static ActivationKey Generate(DateTime expirationDate, object[] data,
+            params object[] environment)
+        {
+            using (var encryptor = CreateEncryptor(environment))
+            {
+                return encryptor.Generate(expirationDate, data);
+            }
+        }
+
+        /// <summary>
+        /// Generates an <see cref="ActivationKey"/> that will never expire based on the data
+        /// bound to the specified environment parameters using specified cryptographic algorithms.
+        /// </summary>
+        /// <param name="data">Data that will be included in the activation key.</param>
+        /// <param name="environment">Environment parameters that will be used to generate the activation key.
+        /// These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// </param>
+        /// <returns>Created activation key.</returns>
+        public static ActivationKey Generate(object[] data,
+            params object[] environment)
+        {
+            using (var encryptor = CreateEncryptor(environment))
+            {
+                return encryptor.Generate(DateTime.MaxValue, data);
+            }
+        }
+
+        /// <summary>
         /// Checks the activation key.
         /// </summary>
         /// <param name="environment">Software-defined environmental settings required to validate the activation key.</param>
         /// <returns>True if the activation key is valid, false otherwise.</returns>
         public bool Verify(params object[] environment)
         {
-            using (ActivationKeyDecryptor decryptor = CreateDecryptor(this, environment))
+            using (ActivationKeyDecryptor decryptor = CreateDecryptor(environment))
             {
                 return decryptor.Success;
+            }
+        }
+
+        public byte[] GetData<TSymmetricAlgorithm, THashAlgorithm>(params object[] environment)
+            where TSymmetricAlgorithm : SymmetricAlgorithm
+            where THashAlgorithm : HashAlgorithm
+        {
+            using (ActivationKeyDecryptor decryptor = CreateDecryptor<TSymmetricAlgorithm, THashAlgorithm>(environment))
+            {
+                return decryptor.Data;
             }
         }
 
@@ -320,7 +420,7 @@ namespace System.Security.Activation
             where TSymmetricAlgorithm : SymmetricAlgorithm
             where THashAlgorithm : HashAlgorithm
         {
-            using (ActivationKeyDecryptor decryptor = CreateDecryptor<TSymmetricAlgorithm, THashAlgorithm>(this, environment))
+            using (ActivationKeyDecryptor decryptor = CreateDecryptor<TSymmetricAlgorithm, THashAlgorithm>(environment))
             {
                 return decryptor.Success;
             }
@@ -329,7 +429,7 @@ namespace System.Security.Activation
         /// <inheritdoc cref="ICloneable.Clone()"/>
         public object Clone()
         {
-            return new ActivationKey()
+            return new ActivationKey
             {
                 Data = Data.ArrayClone(),
                 Hash = Hash.ArrayClone(),
@@ -579,11 +679,10 @@ namespace System.Security.Activation
             where TSymmetricAlgorithm : SymmetricAlgorithm
             where THashAlgorithm : HashAlgorithm
         {
-            SymmetricAlgorithm cryptoAlg = Activator.CreateInstance<TSymmetricAlgorithm>();
-            HashAlgorithm hashAlg = Activator.CreateInstance<THashAlgorithm>();
+            SymmetricAlgorithm cryptoAlg = CreateSymmetricAlgorithm<TSymmetricAlgorithm>();
+            HashAlgorithm hashAlg = CreateHashAlgorithm<THashAlgorithm>();
 
             return new ActivationKeyEncryptor(cryptoAlg, hashAlg, environment);
-
         }
 
         /// <summary>
@@ -677,11 +776,10 @@ namespace System.Security.Activation
             if (InvalidState)
                 throw new InvalidOperationException(GetResourceString("Arg_InvalidOperationException"));
 
-            using (SymmetricAlgorithm cryptoAlg = Activator.CreateInstance<TSymmetricAlgorithm>())
-            using (HashAlgorithm hashAlg = Activator.CreateInstance<THashAlgorithm>())
-            {
-                return new ActivationKeyDecryptor(cryptoAlg, hashAlg, this, environment);
-            }
+            SymmetricAlgorithm cryptoAlg = CreateSymmetricAlgorithm<TSymmetricAlgorithm>();
+            HashAlgorithm hashAlg = CreateHashAlgorithm<THashAlgorithm>();
+
+            return new ActivationKeyDecryptor(cryptoAlg, hashAlg, this, environment);
         }
 
         #endregion
