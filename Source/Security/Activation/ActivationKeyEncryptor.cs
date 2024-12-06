@@ -121,7 +121,7 @@ namespace System.Security.Activation
         {
             byte[] serializedData = Serialize(expirationDate, data);
             byte[] encryptedData = _encryptor.TransformFinalBlock(serializedData, 0, serializedData.Length);
-            byte[] seed = _seed;
+            byte[] seed = _seed.ArrayClone();
             byte[] hash = _hasher.ComputeHash(Serialize(serializedData, seed));
 
             ActivationKey activationKey = new ActivationKey(encryptedData, hash, seed);
