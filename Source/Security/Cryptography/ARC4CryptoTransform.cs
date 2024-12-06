@@ -58,16 +58,16 @@ namespace System.Security.Cryptography
         private int _x1, _y1, _x2, _y2;
         private bool _disposed = false;
 
-        // Size of the input data block in bytes.
+        // Size of the input data block in bits.
         public int InputBlockSize => 1;
 
-        // Size of the output data block in bytes.
+        // Size of the output data block in bits.
         public int OutputBlockSize => 1;
 
         // Indicates whether multiple data blocks can be converted.
         public bool CanTransformMultipleBlocks => true;
 
-        // Indicates whether the transformation cannot be reused.
+        // Indicates whether the transformation can be reused.
         public bool CanReuseTransform => false;
 
         public ARC4CryptoTransform(byte[] key, byte[] iv)

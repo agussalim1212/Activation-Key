@@ -16,7 +16,7 @@ using System.Globalization;
 namespace System.Security.Activation
 {
     /// <summary>
-    /// Converts <see cref = "ActivationKey" /> between other types.
+    ///     Converts <see cref = "ActivationKey" /> between other types.
     /// </summary> 
     public sealed class ActivationKeyConverter : TypeConverter
     {

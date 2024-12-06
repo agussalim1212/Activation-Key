@@ -1,4 +1,4 @@
-/***************************************************************
+﻿/***************************************************************
 
 •   File: ActivationKey.cs
 
@@ -49,7 +49,7 @@ using static System.InternalTools;
 namespace System.Security.Activation
 {
     /// <summary>
-    /// Represents the activation key for the specified encoding.
+    ///     Represents the activation key for the specified encoding.
     /// </summary>
     [Serializable]
     [TypeConverter(typeof(ActivationKeyConverter))]
@@ -66,17 +66,17 @@ namespace System.Security.Activation
         private static ActivationKeyBinaryParser InternalBinaryParser => ActivationKeyBinaryParser.DefaultParser;
 
         /// <summary>
-        /// Returns an activation key file manager with default parameters. Used to loading and saving activation keys.
+        ///     Returns an activation key file manager with default parameters. Used to loading and saving activation keys.
         /// </summary>
         public static ActivationKeyManager DefaultManager => ActivationKeyManager.DefaultManager;
 
         /// <summary>
-        /// Returns an activation key encryptor with default encryption algorithm. Used to generating activation keys.
+        ///     Returns an activation key encryptor with default encryption algorithm. Used to generating activation keys.
         /// </summary>
         public static ActivationKeyEncryptor DefaultEncryptor => ActivationKeyEncryptor.DefaultEncryptor;
 
         /// <summary>
-        /// Password-encrypted part of the activation key. Contains expiration date of key and stored options.
+        ///     Password-encrypted part of the activation key. Contains expiration date of key and stored options.
         /// </summary>
         public byte[] Data
         {
@@ -85,7 +85,7 @@ namespace System.Security.Activation
         }
 
         /// <summary>
-        /// Checksum of all activation parameters. Ensures that the key is valid during verification.
+        ///     Checksum of all activation parameters. Ensures that the key is valid during verification.
         /// </summary>
         public byte[] Hash
         {
@@ -94,7 +94,7 @@ namespace System.Security.Activation
         }
 
         /// <summary>
-        /// The value used to initialize encryption providers.
+        ///     The value used to initialize encryption providers.
         /// </summary>
         public byte[] Seed
         {
@@ -103,8 +103,8 @@ namespace System.Security.Activation
         }
 
         /// <summary>
-        /// Returns <see langword="true" /> if this instance of <see cref = "ActivationKey" />
-        /// contains complete data, hash, seed and is ready to be verified.
+        ///     Returns <see langword="true" /> if this instance of <see cref = "ActivationKey" />
+        ///     contains complete data, hash, seed and is ready to be verified.
         /// </summary>
         [field: NonSerialized]
         public bool Ready
@@ -124,33 +124,41 @@ namespace System.Security.Activation
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance <see cref = "ActivationKey" />.
+        ///     Initializes a new instance <see cref = "ActivationKey" />.
         /// </summary> 
         public ActivationKey()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance <see cref = "ActivationKey" /> using serialized data.
+        ///     Initializes a new instance <see cref = "ActivationKey" /> using serialized data.
         /// </summary>
-        /// <param name="info">The <see cref="SerializationInfo" /> for retrieving data.</param>
-        /// <param name="context">A <see cref="StreamingContext"/> object containing information
-        /// about the serialization context.</param>
-        /// <exception cref="ArgumentNullException">Occurs if the info parameter is null.</exception>
+        /// <param name="info">
+        ///     The <see cref="SerializationInfo" /> for retrieving data.
+        /// </param>
+        /// <param name="context">
+        ///     A <see cref="StreamingContext"/> object containing information
+        ///     about the serialization context.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        ///     Occurs if the info parameter is null.
+        /// </exception>
         private ActivationKey(SerializationInfo info, StreamingContext context)
         {
             if (info == null)
                 throw new ArgumentNullException(nameof(info));
 
-            Data = (byte[]) info.GetValue(nameof(Data), typeof(byte[]));
-            Hash = (byte[]) info.GetValue(nameof(Hash), typeof(byte[]));
-            Seed = (byte[]) info.GetValue(nameof(Seed), typeof(byte[]));
+            Data = (byte[])info.GetValue(nameof(Data), typeof(byte[]));
+            Hash = (byte[])info.GetValue(nameof(Hash), typeof(byte[]));
+            Seed = (byte[])info.GetValue(nameof(Seed), typeof(byte[]));
         }
 
         /// <summary>
-        /// Creates an instance of the <see cref = "ActivationKey" /> using the provided byte array.
+        ///     Creates an instance of the <see cref = "ActivationKey" /> using the provided byte array.
         /// </summary>
-        /// <param name="activationKey">Byte array contains data of the activation key.</param>
+        /// <param name="activationKey">
+        ///     Byte array contains data of the activation key.
+        /// </param>
         public ActivationKey(byte[] activationKey)
         {
             if (activationKey.IsNullOrEmpty())
@@ -160,13 +168,15 @@ namespace System.Security.Activation
         }
 
         /// <summary>
-        /// Initializes a new instance <see cref = "ActivationKey" />,
-        /// using the constituent parts of the previously generated key.
+        ///     Initializes a new instance <see cref = "ActivationKey" />,
+        ///     using the constituent parts of the previously generated key.
         /// </summary>
         /// <param name = "data"> Encrypted part of the key. </param>
         /// <param name = "hash"> Key checksum. </param>
         /// <param name = "seed"> Key initialization vector. </param>
-        /// <exception cref="ArgumentException">One of the arguments is null or empty.</exception>
+        /// <exception cref="ArgumentException">
+        ///     One of the arguments is null or empty.
+        /// </exception>
         public ActivationKey(byte[] data, byte[] hash, byte[] seed)
         {
             if (data.IsNullOrEmpty())
@@ -176,20 +186,24 @@ namespace System.Security.Activation
             if (seed.IsNullOrEmpty())
                 throw new ArgumentException(GetResourceString("Arg_EmptyOrNullArray"), nameof(seed));
 
-            Data = data;
-            Hash = hash;
-            Seed = seed;
+            Data = data.ArrayClone();
+            Hash = hash.ArrayClone();
+            Seed = seed.ArrayClone();
         }
 
         /// <summary>
-        /// Initializes a new instance <see cref = "ActivationKey" />,
-        /// using textual representations of the constituent parts of the previously generated key.
+        ///     Initializes a new instance <see cref = "ActivationKey" />,
+        ///     using textual representations of the constituent parts of the previously generated key.
         /// </summary>
         /// <param name = "data"> Encrypted part of the key. </param>
         /// <param name = "hash"> Key checksum. </param>
         /// <param name = "seed"> Key initialization vector. </param> 
-        /// <param name="encoding">Data encoding.</param>
-        /// <exception cref="ArgumentException">One of the arguments is null or empty.</exception>
+        /// <param name="encoding">
+        ///     Data encoding.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        ///     One of the arguments is null or empty.
+        /// </exception>
         public ActivationKey(string data, string hash, string seed, IPrintableEncoding encoding = null)
         {
             if (data.IsNullOrWhiteSpace())
@@ -205,11 +219,13 @@ namespace System.Security.Activation
 
 
         /// <summary>
-        /// Initializes a new instance <see cref = "ActivationKey" />,
-        /// using the text representation of the previously generated key.
+        ///     Initializes a new instance <see cref = "ActivationKey" />,
+        ///     using the text representation of the previously generated key.
         /// </summary>
         /// <param name = "activationKey"> A string containing the activation key. </param>
-        /// <exception cref="ArgumentException">Argument <paramref name="activationKey"/> is null or empty.</exception>
+        /// <exception cref="ArgumentException">
+        ///     Argument <paramref name="activationKey"/> is null or empty.
+        /// </exception>
         public ActivationKey(string activationKey)
         {
             if (activationKey.IsNullOrEmpty())
@@ -219,12 +235,16 @@ namespace System.Security.Activation
         }
 
         /// <summary>
-        /// Initializes a new instance <see cref = "ActivationKey" />,
-        /// using the text representation of the previously generated key.
+        ///     Initializes a new instance <see cref = "ActivationKey" />,
+        ///     using the text representation of the previously generated key.
         /// </summary>
         /// <param name = "activationKey"> A string containing the activation key. </param>
-        /// <param name="delimiters">Characters used as key part delimiters.</param>
-        /// <exception cref="ArgumentException">Argument <paramref name="activationKey"/> is null or empty.</exception>
+        /// <param name="delimiters">
+        ///     Characters used as key part delimiters.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        ///     Argument <paramref name="activationKey"/> is null or empty.
+        /// </exception>
         public ActivationKey(string activationKey, params char[] delimiters)
         {
             if (activationKey.IsNullOrEmpty())
@@ -235,13 +255,19 @@ namespace System.Security.Activation
         }
 
         /// <summary>
-        /// Initializes a new instance <see cref = "ActivationKey" />,
-        /// using the text representation of the previously generated key.
+        ///     Initializes a new instance <see cref = "ActivationKey" />,
+        ///     using the text representation of the previously generated key.
         /// </summary>
         /// <param name = "activationKey"> A string containing the activation key. </param>
-        /// <param name="encoding">Data encoding.</param>
-        /// <param name="delimiters">Characters used as key part delimiters.</param>
-        /// <exception cref="ArgumentException">Argument <paramref name="activationKey"/> is null or empty.</exception>
+        /// <param name="encoding">
+        ///     Data encoding.
+        /// </param>
+        /// <param name="delimiters">
+        ///     Characters used as key part delimiters.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        ///     Argument <paramref name="activationKey"/> is null or empty.
+        /// </exception>
         public ActivationKey(string activationKey, IPrintableEncoding encoding, params char[] delimiters)
         {
             if (activationKey.IsNullOrEmpty())
@@ -250,14 +276,21 @@ namespace System.Security.Activation
             ActivationKeyTextParser parser = new ActivationKeyTextParser(encoding, delimiters);
             parser.InternalParse(this, activationKey);
         }
+
         /// <summary>
-        /// Initializes a new instance <see cref = "ActivationKey" />,
-        /// using the text representation of the previously generated key.
+        ///     Initializes a new instance <see cref = "ActivationKey" />,
+        ///     using the text representation of the previously generated key.
         /// </summary>
         /// <param name = "activationKey"> A string containing the activation key. </param>
-        /// <param name="encoding">Data encoding.</param>
-        /// <param name="delimiters">Characters used as key part delimiters.</param>
-        /// <exception cref="ArgumentException">Argument <paramref name="activationKey"/> is null or empty.</exception>
+        /// <param name="encoding">
+        ///     Data encoding.
+        /// </param>
+        /// <param name="delimiters">
+        ///     Characters used as key part delimiters.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        ///     Argument <paramref name="activationKey"/> is null or empty.
+        /// </exception>
         public ActivationKey(string activationKey, PrintableEncoding encoding, params char[] delimiters)
         {
             if (activationKey.IsNullOrEmpty())
@@ -272,7 +305,7 @@ namespace System.Security.Activation
         #region Operators
 
         /// <summary>
-        /// Converts <see cref="ActivationKey"/> instance to string.
+        ///     Converts <see cref="ActivationKey"/> instance to string.
         /// </summary>
         /// <param name = "activationKey"> A string containing the activation key. </param> 
         public static explicit operator string(ActivationKey activationKey)
@@ -281,7 +314,7 @@ namespace System.Security.Activation
         }
 
         /// <summary>
-        /// Converts the string containing the activation key to an instance of <see cref="ActivationKey"/>.
+        ///     Converts the string containing the activation key to an instance of <see cref="ActivationKey"/>.
         /// </summary>
         /// <param name = "activationKey"> A string containing the activation key. </param> 
         public static explicit operator ActivationKey(string activationKey)
@@ -294,84 +327,116 @@ namespace System.Security.Activation
         #region Methods
 
         /// <summary>
-        /// Generates an <see cref="ActivationKey"/> based on the data and expiration date
-        /// bound to the specified environment parameters using default cryptographic algorithms.
+        ///     Generates an <see cref="ActivationKey"/> based on the data and expiration date
+        ///     bound to the specified environment parameters using default cryptographic algorithms.
         /// </summary>
-        /// <param name="expirationDate">The key expiration date.</param>
-        /// <param name="data">Data that will be included in the activation key.</param>
-        /// <param name="environment">Environment parameters that will be used to generate the activation key.
-        /// These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// <param name="expirationDate">
+        ///     The key expiration date.
         /// </param>
-        /// <returns>Created activation key.</returns>
+        /// <param name="data">
+        ///     Data that will be included in the activation key.
+        /// </param>
+        /// <param name="environment">
+        ///     Environment parameters that will be used to generate the activation key.
+        ///     These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// </param>
+        /// <returns>
+        ///     Created activation key.
+        /// </returns>
         public static ActivationKey Generate(DateTime expirationDate, object[] data,
             params object[] environment)
         {
             using (var encryptor = CreateEncryptor(environment))
             {
-                return encryptor.Generate(expirationDate, data);
+                ActivationKey activationKey = encryptor.Generate(expirationDate, data);
+                return activationKey;
             }
         }
 
         /// <summary>
-        /// Generates an <see cref="ActivationKey"/> that will never expire based on the data
-        /// bound to the specified environment parameters using default cryptographic algorithms.
+        ///     Generates an <see cref="ActivationKey"/> that will never expire based on the data
+        ///     bound to the specified environment parameters using default cryptographic algorithms.
         /// </summary>
-        /// <param name="data">Data that will be included in the activation key.</param>
-        /// <param name="environment">Environment parameters that will be used to generate the activation key.
-        /// These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// <param name="data">
+        ///     Data that will be included in the activation key.
         /// </param>
-        /// <returns>Created activation key.</returns>
+        /// <param name="environment">
+        ///     Environment parameters that will be used to generate the activation key.
+        ///     These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// </param>
+        /// <returns>
+        ///     Created activation key.
+        /// </returns>
         public static ActivationKey Generate(object[] data,
             params object[] environment)
         {
             using (var encryptor = CreateEncryptor(environment))
             {
-                return encryptor.Generate(data);
+                ActivationKey activationKey = encryptor.Generate(data);
+                return activationKey;
             }
         }
 
         /// <summary>
-        /// Generates an <see cref="ActivationKey"/> based on the data and expiration date
-        /// bound to the specified environment parameters using specified cryptographic algorithms.
+        ///     Generates an <see cref="ActivationKey"/> based on the data and expiration date
+        ///     bound to the specified environment parameters using specified cryptographic algorithms.
         /// </summary>
-        /// <typeparam name="TSymmetricAlgorithm">Generic SymmetricAlgorithm type that will be used to encrypt data.
-        /// This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
+        /// <typeparam name="TSymmetricAlgorithm">
+        ///     Generic SymmetricAlgorithm type that will be used to encrypt data.
+        ///     This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
         /// </typeparam>
-        /// <typeparam name="THashAlgorithm">The generic HashAlgorithm type that will be used to calculate the hash of the data.
-        /// This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
+        /// <typeparam name="THashAlgorithm">
+        ///     The generic HashAlgorithm type that will be used to calculate the hash of the data.
+        ///     This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
         /// </typeparam>
-        /// <param name="expirationDate">The key expiration date.</param>
-        /// <param name="data">Data that will be included in the activation key.</param>
-        /// <param name="environment">Environment parameters that will be used to generate the activation key.
-        /// These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// <param name="expirationDate">
+        ///     The key expiration date.
         /// </param>
-        /// <returns>Created activation key.</returns>
-        public static ActivationKey Generate<TSymmetricAlgorithm, THashAlgorithm>(DateTime expirationDate, object[] data,
+        /// <param name="data">
+        ///     Data that will be included in the activation key.
+        /// </param>
+        /// <param name="environment">
+        ///     Environment parameters that will be used to generate the activation key.
+        ///     These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// </param>
+        /// <returns>
+        ///     Created activation key.
+        /// </returns>
+        public static ActivationKey Generate<TSymmetricAlgorithm, THashAlgorithm>(DateTime expirationDate,
+            object[] data,
             params object[] environment)
             where TSymmetricAlgorithm : SymmetricAlgorithm
             where THashAlgorithm : HashAlgorithm
         {
             using (var encryptor = CreateEncryptor<TSymmetricAlgorithm, THashAlgorithm>(environment))
             {
-                return encryptor.Generate(expirationDate, data);
+                ActivationKey activationKey = encryptor.Generate(expirationDate, data);
+                return activationKey;
             }
         }
 
         /// <summary>
-        /// Generates an <see cref="ActivationKey"/> that will never expire based on the data
-        /// bound to the specified environment parameters using specified cryptographic algorithms.
+        ///     Generates an <see cref="ActivationKey"/> that will never expire based on the data
+        ///     bound to the specified environment parameters using specified cryptographic algorithms.
         /// </summary>
-        /// <typeparam name="TSymmetricAlgorithm">Generic SymmetricAlgorithm type that will be used to encrypt data.
-        /// This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
+        /// <typeparam name="TSymmetricAlgorithm">
+        ///     Generic SymmetricAlgorithm type that will be used to encrypt data.
+        ///     This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
         /// </typeparam>
-        /// <typeparam name="THashAlgorithm">The generic HashAlgorithm type that will be used to calculate the hash of the data.
-        /// This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
+        /// <typeparam name="THashAlgorithm">
+        ///     The generic HashAlgorithm type that will be used to calculate the hash of the data.
+        ///     This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
         /// </typeparam>
-        /// <param name="data">Data that will be included in the activation key.</param>
-        /// <param name="environment">Environment parameters that will be used to generate the activation key.
-        /// These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// <param name="data">
+        ///     Data that will be included in the activation key.
         /// </param>
-        /// <returns>Created activation key.</returns>
+        /// <param name="environment">
+        ///     Environment parameters that will be used to generate the activation key.
+        ///     These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// </param>
+        /// <returns>
+        ///     Created activation key.
+        /// </returns>
         public static ActivationKey Generate<TSymmetricAlgorithm, THashAlgorithm>(object[] data,
             params object[] environment)
             where TSymmetricAlgorithm : SymmetricAlgorithm
@@ -379,15 +444,20 @@ namespace System.Security.Activation
         {
             using (var encryptor = CreateEncryptor<TSymmetricAlgorithm, THashAlgorithm>(environment))
             {
-                return encryptor.Generate(data);
+                ActivationKey activationKey = encryptor.Generate(data);
+                return activationKey;
             }
         }
 
         /// <summary>
-        /// Checks the activation key.
+        ///     Checks the activation key.
         /// </summary>
-        /// <param name="environment">Software-defined environmental settings required to validate the activation key.</param>
-        /// <returns>True if the activation key is valid, false otherwise.</returns>
+        /// <param name="environment">
+        ///     Software-defined environmental settings required to validate the activation key.
+        /// </param>
+        /// <returns>
+        ///     True if the activation key is valid, false otherwise.
+        /// </returns>
         public bool Verify(params object[] environment)
         {
             using (ActivationKeyDecryptor decryptor = CreateDecryptor(environment))
@@ -397,134 +467,339 @@ namespace System.Security.Activation
         }
 
         /// <summary>
-        /// Checks the activation key using default cryptographic algorithms and returns embedded data.
+        ///     Checks the activation key using default cryptographic algorithms and returns embedded data.
         /// </summary>
-        /// <param name="environment">Software-defined environmental settings required to validate the activation key.</param>
-        /// <returns>Returns a byte array containing the decrypted data or null if the activation key is invalid.</returns>
+        /// <param name="environment">
+        ///     Software-defined environmental settings required to validate the activation key.
+        /// </param>
+        /// <returns>
+        ///     Returns a byte array containing the decrypted data or null if the activation key is invalid.
+        /// </returns>
         public byte[] GetData(params object[] environment)
         {
             using (ActivationKeyDecryptor decryptor = CreateDecryptor(environment))
             {
-                return decryptor.Success ? decryptor.Data : null;
+                byte[] bytes = decryptor.Success ? decryptor.Data : null;
+                return bytes;
             }
         }
 
         /// <summary>
-        /// Checks the activation key using default cryptographic algorithms
-        /// and returns a <see cref="BinaryReader"/> object
-        /// that can be used to read the decrypted data stored to the activation key.
+        ///     Checks the activation key using default cryptographic algorithms
+        ///     and returns a <see cref="BinaryReader"/> object
+        ///     that can be used to read the decrypted data stored to the activation key.
         /// </summary>
-        /// <param name="environment">Software-defined environmental settings required to validate the activation key.</param>
-        /// <returns>A <see cref="BinaryReader"/> object for reading the decrypted data
-        /// or null if the activation key is invalid.</returns>
+        /// <param name="environment">
+        ///     Software-defined environmental settings required to validate the activation key.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="BinaryReader"/> object for reading the decrypted data
+        ///     or null if the activation key is invalid.
+        /// </returns>
         public BinaryReader GetBinaryReader(params object[] environment)
         {
             using (ActivationKeyDecryptor decryptor = CreateDecryptor(environment))
             {
-                return decryptor.Success ? decryptor.GetBinaryReader() : null;
+                BinaryReader binaryReader = decryptor.Success ? decryptor.GetBinaryReader() : null;
+                return binaryReader;
             }
         }
 
         /// <summary>
-        /// Checks the activation key using default cryptographic algorithms
-        /// and returns a <see cref="TextReader"/> object
-        /// that can be used to read the decrypted data stored to the activation key.
+        ///     Checks the activation key using default cryptographic algorithms
+        ///     and returns a <see cref="TextReader"/> object
+        ///     that can be used to read the decrypted data stored to the activation key.
         /// </summary>
-        /// <param name="encoding">The encoding applied to the contents of the decrypted data.</param>
-        /// <param name="environment">Software-defined environmental settings required to validate the activation key.</param>
-        /// <returns>A <see cref="TextReader"/> object for reading the decrypted data
-        /// or null if the activation key is invalid.</returns>
+        /// <param name="encoding">
+        ///     The encoding applied to the contents of the decrypted data.
+        /// </param>
+        /// <param name="environment">
+        ///     Software-defined environmental settings required to validate the activation key.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="TextReader"/> object for reading the decrypted data
+        ///     or null if the activation key is invalid.
+        /// </returns>
         public TextReader GetTextReader(Encoding encoding, params object[] environment)
         {
             using (ActivationKeyDecryptor decryptor = CreateDecryptor(environment))
             {
-                return decryptor.Success ? decryptor.GetTextReader(encoding) : null;
+                TextReader textReader = decryptor.Success ? decryptor.GetTextReader(encoding) : null;
+                return textReader;
             }
         }
 
         /// <summary>
-        /// Checks the activation key using specified cryptographic algorithms
-        /// and returns data stored to the activation key.
+        ///     Checks the activation key using default cryptographic algorithms
+        ///     and returns a <see cref="TextReader"/> object
+        ///     that can be used to read the decrypted data stored to the activation key.
         /// </summary>
-        /// <typeparam name="TSymmetricAlgorithm">Generic SymmetricAlgorithm type that will be used to decrypt data.
-        /// This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
+        /// <param name="environment">
+        ///     Software-defined environmental settings required to validate the activation key.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="TextReader"/> object for reading the decrypted data
+        ///     or null if the activation key is invalid.
+        /// </returns>
+        public TextReader GetTextReader(params object[] environment)
+        {
+            using (ActivationKeyDecryptor decryptor = CreateDecryptor(environment))
+            {
+                TextReader textReader = decryptor.Success ? decryptor.GetTextReader() : null;
+                return textReader;
+            }
+        }
+
+        /// <summary>
+        ///     Checks the activation key using default cryptographic algorithms
+        ///     and returns a string contains decrypted data stored to the activation key.
+        /// </summary>
+        /// <param name="encoding">
+        ///     The encoding applied to the contents of the decrypted data.
+        /// </param>
+        /// <param name="environment">
+        ///     Software-defined environmental settings required to validate the activation key.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="TextReader"/> object for reading the decrypted data
+        ///     or null if the activation key is invalid.
+        /// </returns>
+        public string GetText(Encoding encoding, params object[] environment)
+        {
+            using (ActivationKeyDecryptor decryptor = CreateDecryptor(environment))
+            {
+                string text = decryptor.Success ? decryptor.GetTextReader(encoding).ReadToEnd() : null;
+                return text;
+            }
+        }
+
+        /// <summary>
+        ///     Checks the activation key using default cryptographic algorithms
+        ///     and returns a string contains decrypted data stored to the activation key.
+        /// </summary>
+        /// <param name="environment">
+        ///     Software-defined environmental settings required to validate the activation key.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="TextReader"/> object for reading the decrypted data
+        ///     or null if the activation key is invalid.
+        /// </returns>
+        public string GetText(params object[] environment)
+        {
+            using (ActivationKeyDecryptor decryptor = CreateDecryptor(environment))
+            {
+                string text = decryptor.Success ? decryptor.GetTextReader().ReadToEnd() : null;
+                return text;
+            }
+        }
+
+        /// <summary>
+        ///     Checks the activation key using specified cryptographic algorithms
+        ///     and returns data stored to the activation key.
+        /// </summary>
+        /// <typeparam name="TSymmetricAlgorithm">
+        ///     Generic SymmetricAlgorithm type that will be used to decrypt data.
+        ///     This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
         /// </typeparam>
-        /// <typeparam name="THashAlgorithm">The generic HashAlgorithm type that will be used to calculate the hash of the data.
-        /// This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
+        /// <typeparam name="THashAlgorithm">
+        ///     The generic HashAlgorithm type that will be used to calculate the hash of the data.
+        ///     This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
         /// </typeparam>
-        /// <param name="environment">Software-defined environmental settings required to validate the activation key.</param>
-        /// <returns>Returns a byte array containing the decrypted data or null if the activation key is invalid.</returns>
+        /// <param name="environment">
+        ///     Software-defined environmental settings required to validate the activation key.
+        /// </param>
+        /// <returns>
+        ///     Returns a byte array containing the decrypted data or null if the activation key is invalid.
+        /// </returns>
         public byte[] GetData<TSymmetricAlgorithm, THashAlgorithm>(params object[] environment)
             where TSymmetricAlgorithm : SymmetricAlgorithm
             where THashAlgorithm : HashAlgorithm
         {
             using (ActivationKeyDecryptor decryptor = CreateDecryptor<TSymmetricAlgorithm, THashAlgorithm>(environment))
             {
-                return decryptor.Data;
+                byte[] data = decryptor.Data;
+                return data;
             }
         }
 
 
         /// <summary>
-        /// Checks the activation key using specified cryptographic algorithms
-        /// and returns a <see cref="BinaryReader"/> object
-        /// that can be used to read the decrypted data stored to the activation key.
+        ///     Checks the activation key using specified cryptographic algorithms
+        ///     and returns a <see cref="BinaryReader"/> object
+        ///     that can be used to read the decrypted data stored to the activation key.
         /// </summary>
-        /// <typeparam name="TSymmetricAlgorithm">Generic SymmetricAlgorithm type that will be used to decrypt data.
-        /// This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
+        /// <typeparam name="TSymmetricAlgorithm">
+        ///     Generic SymmetricAlgorithm type that will be used to decrypt data.
+        ///     This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
         /// </typeparam>
-        /// <typeparam name="THashAlgorithm">The generic HashAlgorithm type that will be used to calculate the hash of the data.
-        /// This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
+        /// <typeparam name="THashAlgorithm">
+        ///     The generic HashAlgorithm type that will be used to calculate the hash of the data.
+        ///     This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
         /// </typeparam>
-        /// <param name="environment">Software-defined environmental settings required to validate the activation key.</param>
-        /// <returns>A <see cref="BinaryReader"/> object for reading the decrypted data
-        /// or null if the activation key is invalid.</returns>
+        /// <param name="environment">
+        ///     Software-defined environmental settings required to validate the activation key.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="BinaryReader"/> object for reading the decrypted data
+        ///     or null if the activation key is invalid.
+        /// </returns>
         public BinaryReader GetBinaryReader<TSymmetricAlgorithm, THashAlgorithm>(params object[] environment)
             where TSymmetricAlgorithm : SymmetricAlgorithm
             where THashAlgorithm : HashAlgorithm
         {
             using (ActivationKeyDecryptor decryptor = CreateDecryptor<TSymmetricAlgorithm, THashAlgorithm>(environment))
             {
-                return decryptor.Success ? decryptor.GetBinaryReader() : null;
+                BinaryReader binaryReader = decryptor.Success ? decryptor.GetBinaryReader() : null;
+                return binaryReader;
             }
         }
 
         /// <summary>
-        /// Checks the activation key using specified cryptographic algorithms
-        /// and returns a <see cref="TextReader"/> object
-        /// that can be used to read the decrypted data stored to the activation key.
+        ///     Checks the activation key using specified cryptographic algorithms
+        ///     and returns a <see cref="TextReader"/> object
+        ///     that can be used to read the decrypted data stored to the activation key.
         /// </summary>
-        /// <typeparam name="TSymmetricAlgorithm">Generic SymmetricAlgorithm type that will be used to decrypt data.
-        /// This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
+        /// <typeparam name="TSymmetricAlgorithm">
+        ///     Generic SymmetricAlgorithm type that will be used to decrypt data.
+        ///     This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
         /// </typeparam>
-        /// <typeparam name="THashAlgorithm">The generic HashAlgorithm type that will be used to calculate the hash of the data.
-        /// This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
+        /// <typeparam name="THashAlgorithm">
+        ///     The generic HashAlgorithm type that will be used to calculate the hash of the data.
+        ///     This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
         /// </typeparam>
-        /// <param name="encoding">The encoding applied to the contents of the decrypted data.</param>
-        /// <param name="environment">Software-defined environmental settings required to validate the activation key.</param>
-        /// <returns>A <see cref="TextReader"/> object for reading the decrypted data
-        /// or null if the activation key is invalid.</returns>
-        public TextReader GetTextReader<TSymmetricAlgorithm, THashAlgorithm>(Encoding encoding, params object[] environment)
+        /// <param name="encoding">
+        ///     The encoding applied to the contents of the decrypted data.
+        /// </param>
+        /// <param name="environment">
+        ///     Software-defined environmental settings required to validate the activation key.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="TextReader"/> object for reading the decrypted data
+        ///     or null if the activation key is invalid.
+        /// </returns>
+        public TextReader GetTextReader<TSymmetricAlgorithm, THashAlgorithm>(Encoding encoding,
+            params object[] environment)
             where TSymmetricAlgorithm : SymmetricAlgorithm
             where THashAlgorithm : HashAlgorithm
         {
             using (ActivationKeyDecryptor decryptor = CreateDecryptor<TSymmetricAlgorithm, THashAlgorithm>(environment))
             {
-                return decryptor.Success ? decryptor.GetTextReader(encoding) : null;
+                TextReader textReader = decryptor.Success ? decryptor.GetTextReader(encoding) : null;
+                return textReader;
             }
         }
 
         /// <summary>
-        /// Checks the activation key using specified cryptographic algorithms.
+        ///     Checks the activation key using specified cryptographic algorithms
+        ///     and returns a <see cref="TextReader"/> object
+        ///     that can be used to read the decrypted data stored to the activation key.
         /// </summary>
-        /// <typeparam name="TSymmetricAlgorithm">Generic SymmetricAlgorithm type that will be used to decrypt data.
-        /// This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
+        /// <typeparam name="TSymmetricAlgorithm">
+        ///     Generic SymmetricAlgorithm type that will be used to decrypt data.
+        ///     This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
         /// </typeparam>
-        /// <typeparam name="THashAlgorithm">The generic HashAlgorithm type that will be used to calculate the hash of the data.
-        /// This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
+        /// <typeparam name="THashAlgorithm">
+        ///     The generic HashAlgorithm type that will be used to calculate the hash of the data.
+        ///     This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
         /// </typeparam>
-        /// <param name="environment">Software-defined environmental settings required to validate the activation key.</param>
-        /// <returns>True if the activation key is valid, false otherwise.</returns>
+        /// <param name="environment">
+        ///     Software-defined environmental settings required to validate the activation key.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="TextReader"/> object for reading the decrypted data
+        ///     or null if the activation key is invalid.
+        /// </returns>
+        public TextReader GetTextReader<TSymmetricAlgorithm, THashAlgorithm>(params object[] environment)
+            where TSymmetricAlgorithm : SymmetricAlgorithm
+            where THashAlgorithm : HashAlgorithm
+        {
+            using (ActivationKeyDecryptor decryptor = CreateDecryptor<TSymmetricAlgorithm, THashAlgorithm>(environment))
+            {
+                TextReader textReader = decryptor.Success ? decryptor.GetTextReader() : null;
+                return textReader;
+            }
+        }
+
+        /// <summary>
+        ///     Checks the activation key using specified cryptographic algorithms
+        ///     and returns a string contains decrypted data stored to the activation key.
+        /// </summary>
+        /// <typeparam name="TSymmetricAlgorithm">
+        ///     Generic SymmetricAlgorithm type that will be used to decrypt data.
+        ///     This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
+        /// </typeparam>
+        /// <typeparam name="THashAlgorithm">
+        ///     The generic HashAlgorithm type that will be used to calculate the hash of the data.
+        ///     This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
+        /// </typeparam>
+        /// <param name="encoding">
+        ///     The encoding applied to the contents of the decrypted data.
+        /// </param>
+        /// <param name="environment">
+        ///     Software-defined environmental settings required to validate the activation key.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="TextReader"/> object for reading the decrypted data
+        ///     or null if the activation key is invalid.
+        /// </returns>
+        public string GetText<TSymmetricAlgorithm, THashAlgorithm>(Encoding encoding, params object[] environment)
+            where TSymmetricAlgorithm : SymmetricAlgorithm
+            where THashAlgorithm : HashAlgorithm
+        {
+            using (ActivationKeyDecryptor decryptor = CreateDecryptor<TSymmetricAlgorithm, THashAlgorithm>(environment))
+            {
+                string text = decryptor.Success ? decryptor.GetTextReader(encoding).ReadToEnd() : null;
+                return text;
+            }
+        }
+
+        /// <summary>
+        ///     Checks the activation key using specified cryptographic algorithms
+        ///     and returns a string contains decrypted data stored to the activation key.
+        /// </summary>
+        /// <typeparam name="TSymmetricAlgorithm">
+        ///     Generic SymmetricAlgorithm type that will be used to decrypt data.
+        ///     This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
+        /// </typeparam>
+        /// <typeparam name="THashAlgorithm">
+        ///     The generic HashAlgorithm type that will be used to calculate the hash of the data.
+        ///     This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
+        /// </typeparam>
+        /// <param name="environment">
+        ///     Software-defined environmental settings required to validate the activation key.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="TextReader"/> object for reading the decrypted data
+        ///     or null if the activation key is invalid.
+        /// </returns>
+        public string GetText<TSymmetricAlgorithm, THashAlgorithm>(params object[] environment)
+            where TSymmetricAlgorithm : SymmetricAlgorithm
+            where THashAlgorithm : HashAlgorithm
+        {
+            using (ActivationKeyDecryptor decryptor = CreateDecryptor<TSymmetricAlgorithm, THashAlgorithm>(environment))
+            {
+                string text = decryptor.Success ? decryptor.GetTextReader().ReadToEnd() : null;
+                return text;
+            }
+        }
+
+        /// <summary>
+        ///     Checks the activation key using specified cryptographic algorithms.
+        /// </summary>
+        /// <typeparam name="TSymmetricAlgorithm">
+        ///     Generic SymmetricAlgorithm type that will be used to decrypt data.
+        ///     This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
+        /// </typeparam>
+        /// <typeparam name="THashAlgorithm">
+        ///     The generic HashAlgorithm type that will be used to calculate the hash of the data.
+        ///     This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
+        /// </typeparam>
+        /// <param name="environment">
+        ///     Software-defined environmental settings required to validate the activation key.
+        /// </param>
+        /// <returns>
+        ///     True if the activation key is valid, false otherwise.
+        /// </returns>
         public bool Verify<TSymmetricAlgorithm, THashAlgorithm>(params object[] environment)
             where TSymmetricAlgorithm : SymmetricAlgorithm
             where THashAlgorithm : HashAlgorithm
@@ -535,123 +810,442 @@ namespace System.Security.Activation
             }
         }
 
+        /// <summary>
+        ///     Returns an activation key file manager using the specified parameters. Used to loading and saving activation keys.
+        /// </summary>
+        /// <param name="header">
+        ///     The header of the binary activation key data, which is used to verify the file format.
+        /// </param>
+        /// <param name="encoding">
+        ///     Encoding used to encode/decode activation key data.
+        /// </param>
+        /// <param name="delimiters">
+        ///     An array of characters that are used to split the string into parts of the activation key.
+        /// </param>
+        public static ActivationKeyManager CreateManager(ushort header, IPrintableEncoding encoding,
+            params char[] delimiters)
+        {
+            ActivationKeyManager manager = new ActivationKeyManager(header, encoding, delimiters);
+            return manager;
+        }
+
+        /// <summary>
+        ///     Returns an activation key file manager using the specified parameters. Used to loading and saving activation keys.
+        /// </summary>
+        /// <param name="encoding">
+        ///     Encoding used to encode/decode activation key data.
+        /// </param>
+        /// <param name="delimiters">
+        ///     An array of characters that are used to split the string into parts of the activation key.
+        /// </param>
+        public static ActivationKeyManager CreateManager(IPrintableEncoding encoding, params char[] delimiters)
+        {
+            ActivationKeyManager manager = new ActivationKeyManager(encoding, delimiters);
+            return manager;
+        }
+
+        /// <summary>
+        ///     Returns an activation key file manager using the specified parameters. Used to loading and saving activation keys.
+        /// </summary>
+        /// <param name="header">
+        ///     The header of the binary activation key data, which is used to verify the file format.
+        /// </param>
+        /// <param name="encoding">
+        ///     Encoding used to encode/decode activation key data.
+        /// </param>
+        /// <param name="delimiters">
+        ///     An array of characters that are used to split the string into parts of the activation key.
+        /// </param>
+        public static ActivationKeyManager CreateManager(ushort header, PrintableEncoding encoding,
+            params char[] delimiters)
+        {
+            ActivationKeyManager manager = new ActivationKeyManager(header, encoding, delimiters);
+            return manager;
+        }
+
+        /// <summary>
+        ///     Returns an activation key file manager using the specified parameters. Used to loading and saving activation keys.
+        /// </summary>
+        /// <param name="encoding">
+        ///     Encoding used to encode/decode activation key data.
+        /// </param>
+        /// <param name="delimiters">
+        ///     An array of characters that are used to split the string into parts of the activation key.
+        /// </param>
+        public static ActivationKeyManager CreateManager(PrintableEncoding encoding, params char[] delimiters)
+        {
+            ActivationKeyManager manager = new ActivationKeyManager(encoding, delimiters);
+            return manager;
+        }
+
+        /// <summary>
+        ///     Returns an activation key file manager using the specified parameters. Used to loading and saving activation keys.
+        /// </summary>
+        /// <param name="header">
+        ///     The header of the binary activation key data, which is used to verify the file format.
+        /// </param>
+        public static ActivationKeyManager CreateManager(ushort header)
+        {
+            ActivationKeyManager manager = new ActivationKeyManager(header);
+            return manager;
+        }
+
+        /// <summary>
+        ///     Creates an encryptor that can generate new activation keys
+        ///     bound to the specified environment parameters using default cryptographic algorithms.
+        /// </summary>
+        /// <param name="environment">
+        ///     Environment parameters that will be used to generate the activation key.
+        ///     These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// </param>
+        /// <returns>
+        ///     An instance of the <see cref="ActivationKeyEncryptor"/>.
+        /// </returns>
+        public static ActivationKeyEncryptor CreateEncryptor(params object[] environment)
+        {
+            ActivationKeyEncryptor encryptor = new ActivationKeyEncryptor(environment);
+            return encryptor;
+        }
+
+        /// <summary>
+        ///     Creates an encryptor that can generate new activation keys
+        ///     bound to the specified environment parameters using specified cryptographic algorithms.
+        /// </summary>
+        /// <typeparam name="TSymmetricAlgorithm">
+        ///     Generic SymmetricAlgorithm type that will be used to encrypt data.
+        ///     This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
+        /// </typeparam>
+        /// <typeparam name="THashAlgorithm">
+        ///     The generic HashAlgorithm type that will be used to calculate the hash of the data.
+        ///     This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
+        /// </typeparam>
+        /// <param name="environment">
+        ///     Environment parameters that will be used to generate the activation key.
+        ///     These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// </param>
+        /// <returns>
+        ///     An instance of the <see cref="ActivationKeyEncryptor"/>.
+        /// </returns>
+        public static ActivationKeyEncryptor CreateEncryptor<TSymmetricAlgorithm, THashAlgorithm>(
+            params object[] environment)
+            where TSymmetricAlgorithm : SymmetricAlgorithm
+            where THashAlgorithm : HashAlgorithm
+        {
+            SymmetricAlgorithm cryptoAlg = CreateSymmetricAlgorithm<TSymmetricAlgorithm>();
+            HashAlgorithm hashAlg = CreateHashAlgorithm<THashAlgorithm>();
+            ActivationKeyEncryptor encryptor = new ActivationKeyEncryptor(cryptoAlg, hashAlg, environment);
+            return encryptor;
+        }
+
+        /// <summary>
+        ///     Set the default encoding to encode/decode the activation key.
+        /// </summary>
+        /// <param name="encoding">
+        ///     Encoding that will be used by default.
+        /// </param>
+        public static void SetDefaultEncoding(IPrintableEncoding encoding)
+        {
+            if (encoding == null)
+                throw new ArgumentNullException(nameof(encoding),
+                    GetResourceString("ArgumentNull_WithParamName", nameof(encoding)));
+
+            ActivationKeyTextParser.InternalParser.Encoding = encoding;
+        }
+
+        /// <summary>
+        ///     Set the default encoding to encode/decode the activation key.
+        /// </summary>
+        /// <param name="encoding">
+        ///     Encoding that will be used by default.
+        /// </param>
+        public static void SetDefaultEncoding(PrintableEncoding encoding)
+        {
+            ActivationKeyTextParser.InternalParser.Encoding = ActivationKeyTextParser.GetEncoding(encoding);
+        }
+
+        /// <summary>
+        ///     Set the default encoding to encode/decode the activation key using the following alphabet.
+        /// </summary>
+        /// <param name="alphabet">
+        ///     String containing characters that will be used by default.
+        /// </param>
+        public static void SetDefaultEncoding(string alphabet)
+        {
+            ActivationKeyTextParser.InternalParser.Encoding = ActivationKeyTextParser.CreateEncoding(alphabet);
+        }
+
+        /// <summary>
+        ///     Set default characters that are used to split the activation key into parts.
+        /// </summary>
+        /// <param name="delimiters">
+        ///     Characters that are used by default.
+        /// </param>
+        public static void SetDefaultDelimiters(params char[] delimiters)
+        {
+            if (delimiters.IsNullOrEmpty())
+                throw new ArgumentException(GetResourceString("Arg_EmptyOrNullArray", nameof(delimiters)));
+
+            ActivationKeyTextParser.InternalParser.Delimiters = delimiters.ArrayClone();
+        }
+
+        /// <summary>
+        ///     Set default header that will be used to validate the binary format of the activation key.
+        /// </summary>
+        /// <param name="header">
+        ///     Value that will be used as binary header by default.
+        /// </param>
+        public static void SetDefaultBinaryHeader(ushort header)
+        {
+            ActivationKeyBinaryParser.InternalParser.Header = header;
+        }
+
+        /// <summary>
+        ///     Returns a decryptor bound to specified environment parameters using default cryptographic algorithms.
+        ///     Used to verify the current activation key and extract encrypted data.
+        /// </summary>
+        /// <param name="environment">
+        ///     Environment binding parameters used to generate the key.
+        ///     These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// </param>
+        /// <returns>
+        ///     An instance of the <see cref="ActivationKeyDecryptor"/>.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        ///     Thrown if the <see cref="ActivationKey.Ready"/> property for this instance of <see cref="ActivationKey"/> is false.
+        /// </exception>
+        public ActivationKeyDecryptor CreateDecryptor(params object[] environment)
+        {
+            if (InvalidState)
+                throw new InvalidOperationException(GetResourceString("Arg_InvalidOperationException"));
+
+            ActivationKeyDecryptor decryptor = new ActivationKeyDecryptor(this, environment);
+            return decryptor;
+        }
+
+        /// <summary>
+        ///     Returns a decryptor bound to specified environment parameters using the specified encryption and hashing algorithms.
+        ///     Used to verify the current activation key and extract encrypted data.
+        /// </summary>
+        /// <typeparam name="TSymmetricAlgorithm">
+        ///     Generic SymmetricAlgorithm type that will be used to decrypt data.
+        ///     This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
+        /// </typeparam>
+        /// <typeparam name="THashAlgorithm">
+        ///     The generic HashAlgorithm type that will be used to calculate the hash of the data.
+        ///     This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
+        /// </typeparam>
+        /// <param name="environment">
+        ///     Environment binding parameters used to generate the key.
+        ///     These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// </param>
+        /// <returns>
+        ///     An instance of the <see cref="ActivationKeyDecryptor"/>.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        ///     Thrown if the <see cref="ActivationKey.Ready"/> property for this instance of <see cref="ActivationKey"/> is false.
+        /// </exception>
+        public ActivationKeyDecryptor CreateDecryptor<TSymmetricAlgorithm, THashAlgorithm>(params object[] environment)
+            where TSymmetricAlgorithm : SymmetricAlgorithm
+            where THashAlgorithm : HashAlgorithm
+        {
+            if (InvalidState)
+                throw new InvalidOperationException(GetResourceString("Arg_InvalidOperationException"));
+
+            SymmetricAlgorithm cryptoAlg = CreateSymmetricAlgorithm<TSymmetricAlgorithm>();
+            HashAlgorithm hashAlg = CreateHashAlgorithm<THashAlgorithm>();
+            ActivationKeyDecryptor decryptor = new ActivationKeyDecryptor(cryptoAlg, hashAlg, this, environment);
+            return decryptor;
+        }
+
         /// <inheritdoc cref="ICloneable.Clone()"/>
         public object Clone()
         {
             return new ActivationKey
             {
-                Data = Data.ArrayClone(),
-                Hash = Hash.ArrayClone(),
-                Seed = Seed.ArrayClone()
-            }; ;
+                Data = this.Data.ArrayClone(),
+                Hash = this.Hash.ArrayClone(),
+                Seed = this.Seed.ArrayClone()
+            };
+            ;
         }
 
         /// <summary>
-        /// Converts the data into binary format for saving to a file.
+        ///     Converts the data into binary format for saving to a file.
         /// </summary>
-        /// <returns>An array containing the binary representation of the data.</returns>
+        /// <returns>
+        ///     An array containing the binary representation of the data.
+        /// </returns>
         public byte[] ToBinary()
         {
-            return InternalBinaryParser.GetBytes(this);
+            byte[] bytes = InternalBinaryParser.GetBytes(this);
+            return bytes;
         }
 
         /// <summary>
-        /// Converts the data into binary format for saving to a file.
+        ///     Converts the data into binary format for saving to a file.
         /// </summary>
-        /// <param name="header">The first 2 bytes header.</param>
-        /// <returns>An array containing the binary representation of the data.</returns>
+        /// <param name="header">
+        ///     The first 2 bytes header.
+        /// </param>
+        /// <returns>
+        ///     An array containing the binary representation of the data.
+        /// </returns>
         public byte[] ToBinary(ushort header)
         {
-            return new ActivationKeyBinaryParser(header).GetBytes(this);
+            byte[] bytes = new ActivationKeyBinaryParser(header).GetBytes(this);
+            return bytes;
         }
 
         /// <inheritdoc cref="object.ToString()"/>
         public override string ToString()
         {
-            return InternalTextParser.GetString(this);
-        }
-
-        /// <summary>Returns a string that represents the current object.</summary>
-        /// <param name="encoding">Data encoding.</param>
-        /// <returns>A string that represents the current object.</returns>
-        public string ToString(IPrintableEncoding encoding)
-        {
-            return new ActivationKeyTextParser(encoding).GetString(this);
-        }
-
-        /// <summary>Returns a string that represents the current object.</summary>
-        /// <param name="encoding">Data encoding.</param>
-        /// <returns>A string that represents the current object.</returns>
-        public string ToString(PrintableEncoding encoding)
-        {
-            return new ActivationKeyTextParser(encoding).GetString(this);
-        }
-
-        /// <summary>Returns a string that represents the current object.</summary>
-        /// <param name="delimiter">A character used as a key part delimiter.</param>
-        /// <param name="encoding">Data encoding.</param>
-        /// <returns>A string that represents the current object.</returns>
-        public string ToString(char delimiter, IPrintableEncoding encoding = null)
-        {
-            return new ActivationKeyTextParser(encoding, delimiter).GetString(this);
-        }
-
-        /// <summary>Returns a string that represents the current object.</summary>
-        /// <param name="delimiter">A character used as a key part delimiter.</param>
-        /// <param name="encoding">Data encoding.</param>
-        /// <returns>A string that represents the current object.</returns>
-        public string ToString(char delimiter, PrintableEncoding encoding)
-        {
-            return new ActivationKeyTextParser(encoding, delimiter).GetString(this);
+            string text = InternalTextParser.GetString(this);
+            return text;
         }
 
         /// <summary>
-        /// Converts the current instance of <see cref="ActivationKey"/> to a string in the specified format.
-        /// Replaces the characters %D, %H and %T in the string specified in <paramref name="pattern"/> 
-        /// with <see cref="Data"/>, <see cref="Hash"/> and <see cref= "Seed"/> properties 
-        /// of the current instance of <see cref="ActivationKey"/>.
+        ///     Returns a string that represents the current object.
         /// </summary>
-        /// <param name="pattern">A string containing formatting information.</param>
-        /// <param name="encoding">Data encoding.</param>
-        /// <returns>The string value of the current instance of <see cref="ActivationKey"/> in the specified format.</returns>
-        /// <exception cref="ArgumentException">Argument <paramref name="pattern"/> is null or empty.</exception>
+        /// <param name="encoding">
+        ///     Data encoding.
+        /// </param>
+        /// <returns>
+        ///     A string that represents the current object.
+        /// </returns>
+        public string ToString(IPrintableEncoding encoding)
+        {
+            ActivationKeyTextParser parser = new ActivationKeyTextParser(encoding);
+            string text = parser.GetString(this);
+            return text;
+        }
+
+        /// <summary>
+        ///     Returns a string that represents the current object.
+        /// </summary>
+        /// <param name="encoding">
+        ///     Data encoding.
+        /// </param>
+        /// <returns>
+        ///     A string that represents the current object.
+        /// </returns>
+        public string ToString(PrintableEncoding encoding)
+        {
+            ActivationKeyTextParser parser = new ActivationKeyTextParser(encoding);
+            string text = parser.GetString(this);
+            return text;
+        }
+
+        /// <summary>
+        ///     Returns a string that represents the current object.
+        /// </summary>
+        /// <param name="delimiter">
+        ///     A character used as a key part delimiter.
+        /// </param>
+        /// <param name="encoding">
+        ///     Data encoding.
+        /// </param>
+        /// <returns>
+        ///     A string that represents the current object.
+        /// </returns>
+        public string ToString(char delimiter, IPrintableEncoding encoding = null)
+        {
+            ActivationKeyTextParser parser = new ActivationKeyTextParser(encoding, delimiter);
+            string text = parser.GetString(this);
+            return text;
+        }
+
+        /// <summary>
+        ///     Returns a string that represents the current object.
+        /// </summary>
+        /// <param name="delimiter">
+        ///     A character used as a key part delimiter.
+        /// </param>
+        /// <param name="encoding">
+        ///     Data encoding.
+        /// </param>
+        /// <returns>
+        ///     A string that represents the current object.
+        /// </returns>
+        public string ToString(char delimiter, PrintableEncoding encoding)
+        {
+            ActivationKeyTextParser parser = new ActivationKeyTextParser(encoding, delimiter);
+            string text = parser.GetString(this);
+            return text;
+        }
+
+        /// <summary>
+        ///     Converts the current instance of <see cref="ActivationKey"/> to a string in the specified format.
+        ///     Replaces the characters %D, %H and %T in the string specified in <paramref name="pattern"/> 
+        ///     with <see cref="Data"/>, <see cref="Hash"/> and <see cref= "Seed"/> properties 
+        ///     of the current instance of <see cref="ActivationKey"/>.
+        /// </summary>
+        /// <param name="pattern">
+        ///     A string containing formatting information.
+        /// </param>
+        /// <param name="encoding">
+        ///     Data encoding.
+        /// </param>
+        /// <returns>
+        ///     The string value of the current instance of <see cref="ActivationKey"/> in the specified format.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        ///     Argument <paramref name="pattern"/> is null or empty.
+        /// </exception>
         public string ToString(string pattern, IPrintableEncoding encoding = null)
         {
             if (pattern.IsNullOrEmpty())
                 throw new ArgumentException(GetResourceString("Arg_EmptyOrNullString"), nameof(pattern));
 
-            return new ActivationKeyTextParser(encoding).GetPattern(this, pattern);
+            ActivationKeyTextParser parser = new ActivationKeyTextParser(encoding);
+            string text = parser.GetPattern(this, pattern);
+            return text;
         }
 
         /// <summary>
-        /// Converts the current instance of <see cref="ActivationKey"/> to a string in the specified format.
-        /// Replaces the characters %D, %H and %T in the string specified in <paramref name="pattern"/> 
-        /// with <see cref="Data"/>, <see cref="Hash"/> and <see cref= "Seed"/> properties 
-        /// of the current instance of <see cref="ActivationKey"/>.
+        ///     Converts the current instance of <see cref="ActivationKey"/> to a string in the specified format.
+        ///     Replaces the characters %D, %H and %T in the string specified in <paramref name="pattern"/> 
+        ///     with <see cref="Data"/>, <see cref="Hash"/> and <see cref= "Seed"/> properties 
+        ///     of the current instance of <see cref="ActivationKey"/>.
         /// </summary>
-        /// <param name="pattern">A string containing formatting information.</param>
-        /// <param name="encoding">Data encoding.</param>
-        /// <returns>The string value of the current instance of <see cref="ActivationKey"/> in the specified format.</returns>
-        /// <exception cref="ArgumentException">Argument <paramref name="pattern"/> is null or empty.</exception>
+        /// <param name="pattern">
+        ///     A string containing formatting information.
+        /// </param>
+        /// <param name="encoding">
+        ///     Data encoding.
+        /// </param>
+        /// <returns>
+        ///     The string value of the current instance of <see cref="ActivationKey"/> in the specified format.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        ///     Argument <paramref name="pattern"/> is null or empty.
+        /// </exception>
         public string ToString(string pattern, PrintableEncoding encoding)
         {
             if (pattern.IsNullOrEmpty())
                 throw new ArgumentException(GetResourceString("Arg_EmptyOrNullString"), nameof(pattern));
 
-            return new ActivationKeyTextParser(encoding).GetPattern(this, pattern);
+            ActivationKeyTextParser parser = new ActivationKeyTextParser(encoding);
+            string text = parser.GetPattern(this, pattern);
+            return text;
         }
 
         /// <inheritdoc cref="IFormattable.ToString(string, IFormatProvider)"/>
-        /// <exception cref="FormatException">Format specifier is unsupported.</exception>
+        /// <exception cref="FormatException">
+        ///     Format specifier is unsupported.
+        /// </exception>
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            return InternalTextParser.GetFormat(this, format);
+            string text = InternalTextParser.GetFormat(this, format);
+            return text;
         }
 
         /// <inheritdoc cref="object.GetHashCode" />
         public override int GetHashCode()
         {
-            return SipHashAlgorithm.DefaultHash.GetInt32(Serialize(Data, Hash, Seed));
+            SipHashAlgorithm hashAlg = SipHashAlgorithm.DefaultHash;
+            byte[] bytes = Serialize(Data, Hash, Seed);
+            int hashCode = hashAlg.GetInt32(bytes);
+            return hashCode;
         }
 
         /// <inheritdoc cref="ISerializable.GetObjectData(SerializationInfo, StreamingContext)"/>
@@ -674,7 +1268,9 @@ namespace System.Security.Activation
         }
 
         /// <inheritdoc cref="IXmlSerializable.ReadXml(XmlReader)"/>
-        /// <exception cref="ArgumentNullException">Argument <paramref name="reader"/> is null or empty.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     Argument <paramref name="reader"/> is null or empty.
+        /// </exception>
         public void ReadXml(XmlReader reader)
         {
             if (reader == null)
@@ -684,7 +1280,9 @@ namespace System.Security.Activation
         }
 
         /// <inheritdoc cref="IXmlSerializable.WriteXml(XmlWriter)"/>
-        /// <exception cref="ArgumentNullException">Argument <paramref name="writer"/> is null or empty.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     Argument <paramref name="writer"/> is null or empty.
+        /// </exception>
         public void WriteXml(XmlWriter writer)
         {
             if (writer == null)
@@ -703,192 +1301,6 @@ namespace System.Security.Activation
             Data = null;
             Hash = null;
             Seed = null;
-        }
-
-        /// <summary>
-        /// Returns an activation key file manager using the specified parameters. Used to loading and saving activation keys.
-        /// </summary>
-        /// <param name="header">The header of the binary activation key data, which is used to verify the file format.</param>
-        /// <param name="encoding">Encoding used to encode/decode activation key data.</param>
-        /// <param name="delimiters">An array of characters that are used to split the string into parts of the activation key.</param>
-        public static ActivationKeyManager CreateManager(ushort header, IPrintableEncoding encoding, params char[] delimiters)
-        {
-            return new ActivationKeyManager(header, encoding, delimiters);
-        }
-
-        /// <summary>
-        /// Returns an activation key file manager using the specified parameters. Used to loading and saving activation keys.
-        /// </summary>
-        /// <param name="encoding">Encoding used to encode/decode activation key data.</param>
-        /// <param name="delimiters">An array of characters that are used to split the string into parts of the activation key.</param>
-        public static ActivationKeyManager CreateManager(IPrintableEncoding encoding, params char[] delimiters)
-        {
-            return new ActivationKeyManager(encoding, delimiters);
-        }
-
-        /// <summary>
-        /// Returns an activation key file manager using the specified parameters. Used to loading and saving activation keys.
-        /// </summary>
-        /// <param name="header">The header of the binary activation key data, which is used to verify the file format.</param>
-        /// <param name="encoding">Encoding used to encode/decode activation key data.</param>
-        /// <param name="delimiters">An array of characters that are used to split the string into parts of the activation key.</param>
-        public static ActivationKeyManager CreateManager(ushort header, PrintableEncoding encoding, params char[] delimiters)
-        {
-            return new ActivationKeyManager(header, encoding, delimiters);
-        }
-
-        /// <summary>
-        /// Returns an activation key file manager using the specified parameters. Used to loading and saving activation keys.
-        /// </summary>
-        /// <param name="encoding">Encoding used to encode/decode activation key data.</param>
-        /// <param name="delimiters">An array of characters that are used to split the string into parts of the activation key.</param>
-        public static ActivationKeyManager CreateManager(PrintableEncoding encoding, params char[] delimiters)
-        {
-            return new ActivationKeyManager(encoding, delimiters);
-        }
-
-        /// <summary>
-        /// Returns an activation key file manager using the specified parameters. Used to loading and saving activation keys.
-        /// </summary>
-        /// <param name="header">The header of the binary activation key data, which is used to verify the file format.</param>
-        public static ActivationKeyManager CreateManager(ushort header)
-        {
-            return new ActivationKeyManager(header);
-        }
-
-        /// <summary>
-        /// Creates an encryptor that can generate new activation keys
-        /// bound to the specified environment parameters using default cryptographic algorithms.
-        /// </summary>
-        /// <param name="environment">Environment parameters that will be used to generate the activation key.
-        /// These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
-        /// </param>
-        /// <returns>An instance of the <see cref="ActivationKeyEncryptor"/>.</returns>
-        public static ActivationKeyEncryptor CreateEncryptor(params object[] environment)
-        {
-            return new ActivationKeyEncryptor(environment);
-        }
-
-        /// <summary>
-        /// Creates an encryptor that can generate new activation keys
-        /// bound to the specified environment parameters using specified cryptographic algorithms.
-        /// </summary>
-        /// <typeparam name="TSymmetricAlgorithm">Generic SymmetricAlgorithm type that will be used to encrypt data.
-        /// This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
-        /// </typeparam>
-        /// <typeparam name="THashAlgorithm">The generic HashAlgorithm type that will be used to calculate the hash of the data.
-        /// This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
-        /// </typeparam>
-        /// <param name="environment">Environment parameters that will be used to generate the activation key.
-        /// These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
-        /// </param>
-        /// <returns>An instance of the <see cref="ActivationKeyEncryptor"/>.</returns>
-        public static ActivationKeyEncryptor CreateEncryptor<TSymmetricAlgorithm, THashAlgorithm>(
-            params object[] environment)
-            where TSymmetricAlgorithm : SymmetricAlgorithm
-            where THashAlgorithm : HashAlgorithm
-        {
-            SymmetricAlgorithm cryptoAlg = CreateSymmetricAlgorithm<TSymmetricAlgorithm>();
-            HashAlgorithm hashAlg = CreateHashAlgorithm<THashAlgorithm>();
-
-            return new ActivationKeyEncryptor(cryptoAlg, hashAlg, environment);
-        }
-
-        /// <summary>
-        /// Set the default encoding to encode/decode the activation key.
-        /// </summary>
-        /// <param name="encoding">Encoding that will be used by default.</param>
-        public static void SetDefaultEncoding(IPrintableEncoding encoding)
-        {
-            if (encoding == null)
-                throw new ArgumentNullException(nameof(encoding),
-                    GetResourceString("ArgumentNull_WithParamName", nameof(encoding)));
-            ActivationKeyTextParser.InternalParser.Encoding = encoding;
-        }
-
-        /// <summary>
-        /// Set the default encoding to encode/decode the activation key.
-        /// </summary>
-        /// <param name="encoding">Encoding that will be used by default.</param>
-        public static void SetDefaultEncoding(PrintableEncoding encoding)
-        {
-            ActivationKeyTextParser.InternalParser.Encoding = ActivationKeyTextParser.GetEncoding(encoding);
-        }
-
-        /// <summary>
-        /// Set the default encoding to encode/decode the activation key using the following alphabet.
-        /// </summary>
-        /// <param name="alphabet">String containing characters that will be used by default.</param>
-        public static void SetDefaultEncoding(string alphabet)
-        {
-            ActivationKeyTextParser.InternalParser.Encoding = ActivationKeyTextParser.GetEncoding(alphabet);
-        }
-
-        /// <summary>
-        /// Set default characters that are used to split the activation key into parts.
-        /// </summary>
-        /// <param name="delimiters">Characters that are used by default.</param>
-        public static void SetDefaultDelimiters(params char[] delimiters)
-        {
-            if (delimiters.IsNullOrEmpty())
-                throw new ArgumentException(GetResourceString("Arg_EmptyOrNullArray", nameof(delimiters)));
-            ActivationKeyTextParser.InternalParser.Delimiters = delimiters;
-        }
-
-        /// <summary>
-        /// Set default header that will be used to validate the binary format of the activation key.
-        /// </summary>
-        /// <param name="header">Value that will be used as binary header by default.</param>
-        public static void SetDefaultBinaryHeader(ushort header)
-        {
-            ActivationKeyBinaryParser.InternalParser.Header = header;
-        }
-
-        /// <summary>
-        /// Returns a decryptor bound to specified environment parameters using default cryptographic algorithms.
-        /// Used to verify the current activation key and extract encrypted data.
-        /// </summary>
-        /// <param name="environment">Environment binding parameters used to generate the key.
-        /// These parameters can be used to create a unique activation key that can be used to authenticate a user or device.</param>
-        /// <returns>An instance of the <see cref="ActivationKeyDecryptor"/>.</returns>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown if the <see cref="ActivationKey.Ready"/> property for this instance of <see cref="ActivationKey"/> is false.
-        /// </exception>
-        public ActivationKeyDecryptor CreateDecryptor(params object[] environment)
-        {
-            if (InvalidState)
-                throw new InvalidOperationException(GetResourceString("Arg_InvalidOperationException"));
-
-            return new ActivationKeyDecryptor(this, environment);
-        }
-
-        /// <summary>
-        /// Returns a decryptor bound to specified environment parameters using the specified encryption and hashing algorithms.
-        /// Used to verify the current activation key and extract encrypted data.
-        /// </summary>
-        /// <typeparam name="TSymmetricAlgorithm">Generic SymmetricAlgorithm type that will be used to decrypt data.
-        /// This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
-        /// </typeparam>
-        /// <typeparam name="THashAlgorithm">The generic HashAlgorithm type that will be used to calculate the hash of the data.
-        /// This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
-        /// </typeparam>
-        /// <param name="environment">Environment binding parameters used to generate the key.
-        /// These parameters can be used to create a unique activation key that can be used to authenticate a user or device.</param>
-        /// <returns>An instance of the <see cref="ActivationKeyDecryptor"/>.</returns>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown if the <see cref="ActivationKey.Ready"/> property for this instance of <see cref="ActivationKey"/> is false.
-        /// </exception>
-        public ActivationKeyDecryptor CreateDecryptor<TSymmetricAlgorithm, THashAlgorithm>(params object[] environment)
-            where TSymmetricAlgorithm : SymmetricAlgorithm
-            where THashAlgorithm : HashAlgorithm
-        {
-            if (InvalidState)
-                throw new InvalidOperationException(GetResourceString("Arg_InvalidOperationException"));
-
-            SymmetricAlgorithm cryptoAlg = CreateSymmetricAlgorithm<TSymmetricAlgorithm>();
-            HashAlgorithm hashAlg = CreateHashAlgorithm<THashAlgorithm>();
-
-            return new ActivationKeyDecryptor(cryptoAlg, hashAlg, this, environment);
         }
 
         #endregion
