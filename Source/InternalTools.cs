@@ -1,4 +1,4 @@
-﻿/***************************************************************
+/***************************************************************
 
 •   File: InternalTools.cs
 
@@ -483,10 +483,8 @@ namespace System
                                 if (chars.Length > 0) 
                                     writer.Write(chars);
                                 continue;
-                            case Array array:
-                                if (array.Length > 0)
-                                    foreach (object element in array) 
-                                        writer.Write(Serialize(element));
+                            case Guid guid:
+                                writer.Write(guid.ToByteArray());
                                 continue;
                             case IConvertible conv:
                                 writer.Write(conv.ToString(CultureInfo.InvariantCulture));
@@ -517,6 +515,15 @@ namespace System
                                 {
                                     Marshal.FreeHGlobal(handle);
                                 }
+                                continue;
+                            case Array array:
+                                if (array.Length > 0)
+                                    foreach (object element in array)
+                                        writer.Write(Serialize(element));
+                                continue;
+                            case IEnumerable enumerable:
+                                foreach (var item in enumerable)
+                                    writer.Write(Serialize(item));
                                 continue;
                             default:
                                 if(!obj.GetType().IsSerializable)
