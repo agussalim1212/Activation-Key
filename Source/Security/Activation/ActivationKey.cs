@@ -1,4 +1,4 @@
-﻿/***************************************************************
+/***************************************************************
 
 •   File: ActivationKey.cs
 
@@ -36,6 +36,7 @@
 
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
@@ -294,6 +295,43 @@ namespace System.Security.Activation
 
         /// <summary>
         /// Generates an <see cref="ActivationKey"/> based on the data and expiration date
+        /// bound to the specified environment parameters using default cryptographic algorithms.
+        /// </summary>
+        /// <param name="expirationDate">The key expiration date.</param>
+        /// <param name="data">Data that will be included in the activation key.</param>
+        /// <param name="environment">Environment parameters that will be used to generate the activation key.
+        /// These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// </param>
+        /// <returns>Created activation key.</returns>
+        public static ActivationKey Generate(DateTime expirationDate, object[] data,
+            params object[] environment)
+        {
+            using (var encryptor = CreateEncryptor(environment))
+            {
+                return encryptor.Generate(expirationDate, data);
+            }
+        }
+
+        /// <summary>
+        /// Generates an <see cref="ActivationKey"/> that will never expire based on the data
+        /// bound to the specified environment parameters using default cryptographic algorithms.
+        /// </summary>
+        /// <param name="data">Data that will be included in the activation key.</param>
+        /// <param name="environment">Environment parameters that will be used to generate the activation key.
+        /// These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
+        /// </param>
+        /// <returns>Created activation key.</returns>
+        public static ActivationKey Generate(object[] data,
+            params object[] environment)
+        {
+            using (var encryptor = CreateEncryptor(environment))
+            {
+                return encryptor.Generate(data);
+            }
+        }
+
+        /// <summary>
+        /// Generates an <see cref="ActivationKey"/> based on the data and expiration date
         /// bound to the specified environment parameters using specified cryptographic algorithms.
         /// </summary>
         /// <typeparam name="TSymmetricAlgorithm">Generic SymmetricAlgorithm type that will be used to encrypt data.
@@ -341,44 +379,7 @@ namespace System.Security.Activation
         {
             using (var encryptor = CreateEncryptor<TSymmetricAlgorithm, THashAlgorithm>(environment))
             {
-                return encryptor.Generate(DateTime.MaxValue, data);
-            }
-        }
-
-        /// <summary>
-        /// Generates an <see cref="ActivationKey"/> based on the data and expiration date
-        /// bound to the specified environment parameters using specified cryptographic algorithms.
-        /// </summary>
-        /// <param name="expirationDate">The key expiration date.</param>
-        /// <param name="data">Data that will be included in the activation key.</param>
-        /// <param name="environment">Environment parameters that will be used to generate the activation key.
-        /// These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
-        /// </param>
-        /// <returns>Created activation key.</returns>
-        public static ActivationKey Generate(DateTime expirationDate, object[] data,
-            params object[] environment)
-        {
-            using (var encryptor = CreateEncryptor(environment))
-            {
-                return encryptor.Generate(expirationDate, data);
-            }
-        }
-
-        /// <summary>
-        /// Generates an <see cref="ActivationKey"/> that will never expire based on the data
-        /// bound to the specified environment parameters using specified cryptographic algorithms.
-        /// </summary>
-        /// <param name="data">Data that will be included in the activation key.</param>
-        /// <param name="environment">Environment parameters that will be used to generate the activation key.
-        /// These parameters can be used to create a unique activation key that can be used to authenticate a user or device.
-        /// </param>
-        /// <returns>Created activation key.</returns>
-        public static ActivationKey Generate(object[] data,
-            params object[] environment)
-        {
-            using (var encryptor = CreateEncryptor(environment))
-            {
-                return encryptor.Generate(DateTime.MaxValue, data);
+                return encryptor.Generate(data);
             }
         }
 
@@ -395,6 +396,64 @@ namespace System.Security.Activation
             }
         }
 
+        /// <summary>
+        /// Checks the activation key using default cryptographic algorithms and returns embedded data.
+        /// </summary>
+        /// <param name="environment">Software-defined environmental settings required to validate the activation key.</param>
+        /// <returns>Returns a byte array containing the decrypted data or null if the activation key is invalid.</returns>
+        public byte[] GetData(params object[] environment)
+        {
+            using (ActivationKeyDecryptor decryptor = CreateDecryptor(environment))
+            {
+                return decryptor.Success ? decryptor.Data : null;
+            }
+        }
+
+        /// <summary>
+        /// Checks the activation key using default cryptographic algorithms
+        /// and returns a <see cref="BinaryReader"/> object
+        /// that can be used to read the decrypted data stored to the activation key.
+        /// </summary>
+        /// <param name="environment">Software-defined environmental settings required to validate the activation key.</param>
+        /// <returns>A <see cref="BinaryReader"/> object for reading the decrypted data
+        /// or null if the activation key is invalid.</returns>
+        public BinaryReader GetBinaryReader(params object[] environment)
+        {
+            using (ActivationKeyDecryptor decryptor = CreateDecryptor(environment))
+            {
+                return decryptor.Success ? decryptor.GetBinaryReader() : null;
+            }
+        }
+
+        /// <summary>
+        /// Checks the activation key using default cryptographic algorithms
+        /// and returns a <see cref="TextReader"/> object
+        /// that can be used to read the decrypted data stored to the activation key.
+        /// </summary>
+        /// <param name="encoding">The encoding applied to the contents of the decrypted data.</param>
+        /// <param name="environment">Software-defined environmental settings required to validate the activation key.</param>
+        /// <returns>A <see cref="TextReader"/> object for reading the decrypted data
+        /// or null if the activation key is invalid.</returns>
+        public TextReader GetTextReader(Encoding encoding, params object[] environment)
+        {
+            using (ActivationKeyDecryptor decryptor = CreateDecryptor(environment))
+            {
+                return decryptor.Success ? decryptor.GetTextReader(encoding) : null;
+            }
+        }
+
+        /// <summary>
+        /// Checks the activation key using specified cryptographic algorithms
+        /// and returns data stored to the activation key.
+        /// </summary>
+        /// <typeparam name="TSymmetricAlgorithm">Generic SymmetricAlgorithm type that will be used to decrypt data.
+        /// This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
+        /// </typeparam>
+        /// <typeparam name="THashAlgorithm">The generic HashAlgorithm type that will be used to calculate the hash of the data.
+        /// This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
+        /// </typeparam>
+        /// <param name="environment">Software-defined environmental settings required to validate the activation key.</param>
+        /// <returns>Returns a byte array containing the decrypted data or null if the activation key is invalid.</returns>
         public byte[] GetData<TSymmetricAlgorithm, THashAlgorithm>(params object[] environment)
             where TSymmetricAlgorithm : SymmetricAlgorithm
             where THashAlgorithm : HashAlgorithm
@@ -405,8 +464,58 @@ namespace System.Security.Activation
             }
         }
 
+
         /// <summary>
-        /// Checks the activation key.
+        /// Checks the activation key using specified cryptographic algorithms
+        /// and returns a <see cref="BinaryReader"/> object
+        /// that can be used to read the decrypted data stored to the activation key.
+        /// </summary>
+        /// <typeparam name="TSymmetricAlgorithm">Generic SymmetricAlgorithm type that will be used to decrypt data.
+        /// This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
+        /// </typeparam>
+        /// <typeparam name="THashAlgorithm">The generic HashAlgorithm type that will be used to calculate the hash of the data.
+        /// This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
+        /// </typeparam>
+        /// <param name="environment">Software-defined environmental settings required to validate the activation key.</param>
+        /// <returns>A <see cref="BinaryReader"/> object for reading the decrypted data
+        /// or null if the activation key is invalid.</returns>
+        public BinaryReader GetBinaryReader<TSymmetricAlgorithm, THashAlgorithm>(params object[] environment)
+            where TSymmetricAlgorithm : SymmetricAlgorithm
+            where THashAlgorithm : HashAlgorithm
+        {
+            using (ActivationKeyDecryptor decryptor = CreateDecryptor<TSymmetricAlgorithm, THashAlgorithm>(environment))
+            {
+                return decryptor.Success ? decryptor.GetBinaryReader() : null;
+            }
+        }
+
+        /// <summary>
+        /// Checks the activation key using specified cryptographic algorithms
+        /// and returns a <see cref="TextReader"/> object
+        /// that can be used to read the decrypted data stored to the activation key.
+        /// </summary>
+        /// <typeparam name="TSymmetricAlgorithm">Generic SymmetricAlgorithm type that will be used to decrypt data.
+        /// This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
+        /// </typeparam>
+        /// <typeparam name="THashAlgorithm">The generic HashAlgorithm type that will be used to calculate the hash of the data.
+        /// This type must be an inheritor of the <see cref="HashAlgorithm"/> class.
+        /// </typeparam>
+        /// <param name="encoding">The encoding applied to the contents of the decrypted data.</param>
+        /// <param name="environment">Software-defined environmental settings required to validate the activation key.</param>
+        /// <returns>A <see cref="TextReader"/> object for reading the decrypted data
+        /// or null if the activation key is invalid.</returns>
+        public TextReader GetTextReader<TSymmetricAlgorithm, THashAlgorithm>(Encoding encoding, params object[] environment)
+            where TSymmetricAlgorithm : SymmetricAlgorithm
+            where THashAlgorithm : HashAlgorithm
+        {
+            using (ActivationKeyDecryptor decryptor = CreateDecryptor<TSymmetricAlgorithm, THashAlgorithm>(environment))
+            {
+                return decryptor.Success ? decryptor.GetTextReader(encoding) : null;
+            }
+        }
+
+        /// <summary>
+        /// Checks the activation key using specified cryptographic algorithms.
         /// </summary>
         /// <typeparam name="TSymmetricAlgorithm">Generic SymmetricAlgorithm type that will be used to decrypt data.
         /// This type must be an inheritor of the <see cref="SymmetricAlgorithm"/> class.
