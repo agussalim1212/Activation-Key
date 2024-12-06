@@ -1,5 +1,5 @@
 /***********************************************************
-Activation Key v. 2.0
+Activation Key v. 2.1
 
 The MIT License (MIT)
 Copyright: © NG256 2021-2024.
@@ -39,15 +39,15 @@ using System.Runtime.InteropServices;
 // General information about this assembly is provided by the following set
 // attributes. Change the values of these attributes to change the information,
 // related to the assembly. 
-[assembly: AssemblyTitle("Activation Key Library 2.0")] // Assembly name. 
-[assembly: AssemblyDescription("Activation Key 2.0 Library")] // Assembly description. 
+[assembly: AssemblyTitle("Activation Key Library 2.1")] // Assembly name. 
+[assembly: AssemblyDescription("Activation Key 2.1 Library")] // Assembly description. 
 [assembly: AssemblyCompany("NG256")] // Developer.
 [assembly: AssemblyProduct("NG256 Activation Key")] // Product name.
 [assembly: AssemblyCopyright("© NG256 2021-2024")] // Copyright.
 [assembly: AssemblyTrademark("NG256® Activation Key®")] // Trademark.
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("2.0.2412.0023")]
-[assembly: AssemblyFileVersion("2.0.2412.0023")]
+[assembly: AssemblyVersion("2.1.2412.0023")]
+[assembly: AssemblyFileVersion("2.1.2412.0023")]
 #if DEBUG
 [assembly: InternalsVisibleTo("Test")]
 [assembly: AssemblyConfiguration("Debug")]
