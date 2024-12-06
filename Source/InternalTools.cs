@@ -381,7 +381,7 @@ namespace System
         [SecurityCritical]
         internal static unsafe byte[] Serialize(params object[] objects)
         {
-            if (objects == null)
+            if (objects == null || objects.Length == 0)
             {
                 return new byte[0];
             }
