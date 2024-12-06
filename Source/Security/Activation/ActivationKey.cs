@@ -1,4 +1,4 @@
-﻿/***************************************************************
+/***************************************************************
 
 •   File: ActivationKey.cs
 
@@ -171,9 +171,15 @@ namespace System.Security.Activation
         ///     Initializes a new instance <see cref = "ActivationKey" />,
         ///     using the constituent parts of the previously generated key.
         /// </summary>
-        /// <param name = "data"> Encrypted part of the key. </param>
-        /// <param name = "hash"> Key checksum. </param>
-        /// <param name = "seed"> Key initialization vector. </param>
+        /// <param name = "data">
+        ///     Encrypted part of the key.
+        /// </param>
+        /// <param name = "hash">
+        ///     Key checksum.
+        /// </param>
+        /// <param name = "seed">
+        ///     Key initialization vector.
+        /// </param>
         /// <exception cref="ArgumentException">
         ///     One of the arguments is null or empty.
         /// </exception>
@@ -195,9 +201,15 @@ namespace System.Security.Activation
         ///     Initializes a new instance <see cref = "ActivationKey" />,
         ///     using textual representations of the constituent parts of the previously generated key.
         /// </summary>
-        /// <param name = "data"> Encrypted part of the key. </param>
-        /// <param name = "hash"> Key checksum. </param>
-        /// <param name = "seed"> Key initialization vector. </param> 
+        /// <param name = "data">
+        ///     Encrypted part of the key.
+        /// </param>
+        /// <param name = "hash">
+        ///     Key checksum.
+        /// </param>
+        /// <param name = "seed">
+        ///     Key initialization vector.
+        /// </param>
         /// <param name="encoding">
         ///     Data encoding.
         /// </param>
@@ -238,7 +250,9 @@ namespace System.Security.Activation
         ///     Initializes a new instance <see cref = "ActivationKey" />,
         ///     using the text representation of the previously generated key.
         /// </summary>
-        /// <param name = "activationKey"> A string containing the activation key. </param>
+        /// <param name = "activationKey">
+        ///     A string containing the activation key.
+        /// </param>
         /// <param name="delimiters">
         ///     Characters used as key part delimiters.
         /// </param>
@@ -258,7 +272,9 @@ namespace System.Security.Activation
         ///     Initializes a new instance <see cref = "ActivationKey" />,
         ///     using the text representation of the previously generated key.
         /// </summary>
-        /// <param name = "activationKey"> A string containing the activation key. </param>
+        /// <param name = "activationKey">
+        ///     A string containing the activation key.
+        /// </param>
         /// <param name="encoding">
         ///     Data encoding.
         /// </param>
@@ -281,7 +297,9 @@ namespace System.Security.Activation
         ///     Initializes a new instance <see cref = "ActivationKey" />,
         ///     using the text representation of the previously generated key.
         /// </summary>
-        /// <param name = "activationKey"> A string containing the activation key. </param>
+        /// <param name = "activationKey">
+        ///     A string containing the activation key.
+        /// </param>
         /// <param name="encoding">
         ///     Data encoding.
         /// </param>
@@ -307,7 +325,9 @@ namespace System.Security.Activation
         /// <summary>
         ///     Converts <see cref="ActivationKey"/> instance to string.
         /// </summary>
-        /// <param name = "activationKey"> A string containing the activation key. </param> 
+        /// <param name = "activationKey">
+        ///     A string containing the activation key.
+        /// </param> 
         public static explicit operator string(ActivationKey activationKey)
         {
             return activationKey.ToString();
