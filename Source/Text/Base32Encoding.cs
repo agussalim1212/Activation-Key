@@ -107,12 +107,12 @@ namespace System.Text
 
         public override int GetMaxByteCount(int charCount)
         {
-            return (int) Math.Ceiling(charCount * 5 + 4.0) / 8;
+            return (charCount << 2) + charCount + 0xB >> 3;
         }
 
         public override int GetMaxCharCount(int byteCount)
         {
-            return (int) Math.Ceiling(byteCount * 8 + 4.0) / 5;
+            return (++byteCount << 3) / 5;
         }
 
         public override object Clone()
