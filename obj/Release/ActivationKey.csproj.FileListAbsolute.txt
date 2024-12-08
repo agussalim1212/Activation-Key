@@ -1,0 +1,6 @@
+Y:\Dev\ActivationKey\bin\Release\ActivationKey.dll
+Y:\Dev\ActivationKey\bin\Release\ActivationKey.pdb
+Y:\Dev\ActivationKey\obj\Release\ActivationKey.csproj.AssemblyReference.cache
+Y:\Dev\ActivationKey\obj\Release\ActivationKey.csproj.CoreCompileInputs.cache
+Y:\Dev\ActivationKey\obj\Release\ActivationKey.dll
+Y:\Dev\ActivationKey\obj\Release\ActivationKey.pdb

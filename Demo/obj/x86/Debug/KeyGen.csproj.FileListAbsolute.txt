@@ -1,0 +1,4 @@
+Y:\Dev\ActivationKey\Demo\obj\x86\Debug\KeyGen.csproj.AssemblyReference.cache
+Y:\Dev\ActivationKey\Demo\obj\x86\Debug\System.Windows.Forms.GenLicForm.resources
+Y:\Dev\ActivationKey\Demo\obj\x86\Debug\KeyGen.csproj.GenerateResource.cache
+Y:\Dev\ActivationKey\Demo\obj\x86\Debug\KeyGen.csproj.CoreCompileInputs.cache

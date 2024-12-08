@@ -42,7 +42,7 @@ internal static class Program
                 Console.WriteLine("Base16: \t" + key.ToString(PrintableEncoding.Hexadecimal));
                 Console.WriteLine("Base32: \t" + key);
                 Console.WriteLine("Base64: \t" + key.ToString(PrintableEncoding.Base64));
-                Console.WriteLine("Base128:\t" + key.ToString(ActivationKeyTextParser.GetEncoding(Base128)));
+                Console.WriteLine("Base128:\t" + key.ToString(ActivationKeyTextParser.CreateEncoding(Base128)));
                 ActivationKey.DefaultManager.SaveToFile(key, "key1.bin", true);
                 ActivationKey.DefaultManager.SaveToFile(key, "key1.txt");
             }
@@ -67,7 +67,7 @@ internal static class Program
                 Console.WriteLine("Base16: \t" + key.ToString(PrintableEncoding.Hexadecimal));
                 Console.WriteLine("Base32: \t" + key);
                 Console.WriteLine("Base64: \t" + key.ToString(PrintableEncoding.Base64));
-                Console.WriteLine("Base128:\t" + key.ToString(ActivationKeyTextParser.GetEncoding(Base128)));
+                Console.WriteLine("Base128:\t" + key.ToString(ActivationKeyTextParser.CreateEncoding(Base128)));
                 ActivationKey.DefaultManager.SaveToFile(key, "key2.bin", true);
                 ActivationKey.DefaultManager.SaveToFile(key, "key2.txt");
             }
@@ -92,7 +92,7 @@ internal static class Program
                 Console.WriteLine("Base16: \t" + key.ToString(PrintableEncoding.Hexadecimal));
                 Console.WriteLine("Base32: \t" + key);
                 Console.WriteLine("Base64: \t" + key.ToString(PrintableEncoding.Base64));
-                Console.WriteLine("Base128:\t" + key.ToString(ActivationKeyTextParser.GetEncoding(Base128)));
+                Console.WriteLine("Base128:\t" + key.ToString(ActivationKeyTextParser.CreateEncoding(Base128)));
                 ActivationKey.DefaultManager.SaveToFile(key, "key3.bin", true);
                 ActivationKey.DefaultManager.SaveToFile(key, "key3.txt", false);
             }
