@@ -1,2 +1,0 @@
-Y:\Dev\ActivationKey\Demo\obj\Debug\Test.csproj.AssemblyReference.cache
-Y:\Dev\ActivationKey\Demo\obj\Debug\Test.csproj.CoreCompileInputs.cache

@@ -1,7 +1,0 @@
-Y:\Dev\ActivationKey\Demo\bin\Release\Test.exe
-Y:\Dev\ActivationKey\Demo\bin\Release\ActivationKey.dll
-Y:\Dev\ActivationKey\Demo\bin\Release\ActivationKey.pdb
-Y:\Dev\ActivationKey\Demo\obj\Release\Test.csproj.AssemblyReference.cache
-Y:\Dev\ActivationKey\Demo\obj\Release\Test.csproj.CoreCompileInputs.cache
-Y:\Dev\ActivationKey\Demo\obj\Release\Test.csproj.CopyComplete
-Y:\Dev\ActivationKey\Demo\obj\Release\Test.exe
