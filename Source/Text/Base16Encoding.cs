@@ -46,20 +46,20 @@ namespace System.Text
             while (byteIndex < endByteIndex)
             {
                 byte value = bytes[byteIndex++];
-                chars[charIndex++] = GeDigit(value / 16);
-                chars[charIndex++] = GeDigit(value % 16);
+                chars[charIndex++] = GetDigit(value >> 4);
+                chars[charIndex++] = GetDigit(value & 0xF);
             }
             return charIndex - startCharIndex;
         }
 
         public override int GetMaxByteCount(int charCount)
         {
-            return charCount / 2;
+            return charCount >> 1;
         }
-
+        
         public override int GetMaxCharCount(int byteCount)
         {
-            return byteCount * 2;
+            return byteCount << 1;
         }
 
         private static int GetValue(char digit)
