@@ -84,7 +84,7 @@ namespace System.Text
                     int value = chars[i] * 256 + carry;
                     carry = value / 10;
                     value %= 10;
-                    chars[i + charIndex] = (char)(value + '0'); // Corrected to cast to char and add '0'
+                    chars[i + charIndex] = (char)(value + '0');
                 }
 
             }
@@ -93,31 +93,29 @@ namespace System.Text
 
         public override int GetMaxByteCount(int charCount)
         {
-            // Calculate the maximum number of bytes needed to represent charCount characters in base-10
             return (int)Math.Ceiling(charCount * Math.Log(10, 256) / 8);
         }
 
         public override int GetMaxCharCount(int byteCount)
         {
-            // Calculate the maximum number of characters needed to represent byteCount bytes in base-10
             return (int)Math.Ceiling(byteCount * 8 / Math.Log(10, 256));
         }
 
         private static int GetValue(char digit)
         {
-            if (digit >= '0' && digit <= '9') // Corrected to use character literals
+            if (digit >= '0' && digit <= '9')
                 return digit - '0';
             throw new ArgumentOutOfRangeException(nameof(digit), digit, GetResourceString("Format_BadBase"));
         }
 
         private static char GetDigit(int value) // Corrected method name
         {
-            return (char)(value + '0'); // Corrected to cast to char and add '0'
+            return (char)(value + '0');
         }
 
         public override object Clone()
         {
-            return new Base10Encoding(); // Corrected to return Base10Encoding instead of Base16Encoding
+            return new Base10Encoding();
         }
     }
 }
