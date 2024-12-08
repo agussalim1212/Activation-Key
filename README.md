@@ -2,7 +2,6 @@
 
 Represents the management tool for activation keys that are used to protect your application. These keys are also known as license keys, product keys, product activation, software keys, and serial numbers. It is a special software key for a computer program that certifies that the copy of the program has been obtained legally.
 
-
 # Contents.  
 
 1. [Introduction](#introduction)
@@ -12,6 +11,21 @@ Represents the management tool for activation keys that are used to protect your
 
 # Introduction
 Software protection is an important aspect for developers. One effective way to protect client software from unauthorized use and distribution is to use an activation key, also known as a license key, product key, or software key. In this article we will look at the process of creating an activation key, which uses environment variables to bind to the identifier of the end workstation, and also encrypts data using various cryptographic algorithms. This will ensure reliable protection of the generated activation keys and will not allow an attacker to forge them.
+
+## Key Features
+1. **Security**: Keys are generated using cryptographically secure random data to ensure uniqueness.
+2. **Flexibility**: Customizable key lengths, separators, and group formats.
+3. **Integrity**: Checksum validation ensures keys have not been tampered with.
+4. **Ease of Use**: Simple API for integration into existing systems.
+
+## Installation
+1. Download the latest version of `ActivationKeyBin.zip` from the [releases page](https://github.com/ng256/Activation-Key/releases).
+2. Extract `ActivationKey.dll` from the archive.
+3. Add the DLL as a reference in your project.
+4. Start using the library by importing the namespace.
+
+## License
+This project is distributed under the MIT license. You are free to use and modify it as needed.
 
 ## Library contents
 This project is a DLL file that can be used in any solution.
