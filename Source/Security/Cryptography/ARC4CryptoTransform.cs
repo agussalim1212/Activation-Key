@@ -114,7 +114,7 @@ namespace System.Security.Cryptography
             int x = iv[1]; // First value.
             int a = ((iv[2] & 0x3F) << 2) | 1; // Multiplier.
             int c = ((iv[3] & 0x7F) << 1) | 1; // Increment.
-            int s = (byte)((((iv[2] >> 6) & 3) << 1) | ((iv[3] >> 7) & 1)); // Shift.
+            int s = (byte)(((iv[2] & 0xC0) >> 5) | ((iv[3] & 0x80) >> 7)); // Shift.
 
             // Apply the Linear Congruential Transformation.
             for (int i = 0; i < 256; i++)
