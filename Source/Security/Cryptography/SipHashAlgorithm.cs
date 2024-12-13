@@ -175,7 +175,7 @@ namespace System.Security.Cryptography
             {
                 for (var i = 0; i < _buffer.Length; i++)
                 {
-                    buffer ^= _buffer[i];
+                    *buffer ^= _buffer[i];
                 }
             }
             Initialize();
