@@ -110,7 +110,8 @@ namespace System.Security.Activation
         /// <param name="delimiters">
         ///     Characters that are used to split the activation key into parts.
         /// </param>
-        public ActivationKeyTextParser(IPrintableEncoding encoding, params char[] delimiters) : this(delimiters)
+        public ActivationKeyTextParser(IPrintableEncoding encoding, params char[] delimiters) 
+            : this(delimiters)
         {
             Encoding = encoding;
         }
@@ -124,7 +125,8 @@ namespace System.Security.Activation
         /// <param name="delimiters">
         ///     Characters that are used to split the activation key into parts.
         /// </param>
-        public ActivationKeyTextParser(PrintableEncoding encoding, params char[] delimiters) : this(delimiters)
+        public ActivationKeyTextParser(PrintableEncoding encoding, params char[] delimiters) 
+            : this(delimiters)
         {
             _encoding = GetEncoding(encoding);
         }
@@ -138,7 +140,8 @@ namespace System.Security.Activation
         /// <param name="delimiters">
         ///     Characters that are used to split the activation key into parts.
         /// </param>
-        public ActivationKeyTextParser(string alphabet, params char[] delimiters) : this(delimiters)
+        public ActivationKeyTextParser(string alphabet, params char[] delimiters) 
+            : this(delimiters)
         {
             _encoding = CreateEncoding(alphabet);
         }
@@ -146,7 +149,9 @@ namespace System.Security.Activation
         // Encodes the given byte array using the base encoding.
         private string GetStringSafe(byte[] bytes)
         {
-            return bytes.IsNullOrEmpty() ? string.Empty : _encoding.GetString(bytes).Trim('\0');
+            return bytes.IsNullOrEmpty() 
+                ? string.Empty 
+                : _encoding.GetString(bytes).Trim('\0');
         }
 
         // Parses parts of the key as strings and fills in the activation key data.
@@ -176,7 +181,8 @@ namespace System.Security.Activation
         }
 
         /// <summary>
-        ///     Creates an <see cref="ActivationKey.Data"/> instance based on the data, hash and tail, represented as a string.
+        ///     Creates an <see cref="ActivationKey.Data"/> instance based on the data, 
+        ///     hash and tail, represented as a string.
         /// </summary>
         /// <param name="data">
         ///     String containing data.
@@ -254,11 +260,14 @@ namespace System.Security.Activation
         public ActivationKey Parse(Stream stream, Encoding encoding = null)
         {
             if (stream == null)
-                throw new ArgumentNullException(nameof(stream), GetResourceString("ArgumentNull_Stream"));
+                throw new ArgumentNullException(nameof(stream), 
+                    GetResourceString("ArgumentNull_Stream"));
             if (!stream.CanRead)
-                throw new ArgumentException(GetResourceString("Argument_StreamNotReadable"));
+                throw new ArgumentException(GetResourceString("Argument_StreamNotReadable"),
+                    nameof(stream));
             if (stream.Length == 0)
-                throw new ArgumentException(GetResourceString("Serialization_Stream"));
+                throw new ArgumentException(GetResourceString("Serialization_Stream"),
+                    nameof(stream));
             if (encoding == null)
                 encoding = System.Text.Encoding.UTF8;
 
@@ -432,9 +441,11 @@ namespace System.Security.Activation
                 throw new ArgumentNullException(nameof(activationKey),
                     GetResourceString("ArgumentNull_WithParamName", nameof(activationKey)));
             if (stream == null)
-                throw new ArgumentNullException(nameof(stream), GetResourceString("ArgumentNull_Stream"));
+                throw new ArgumentNullException(nameof(stream), 
+                    GetResourceString("ArgumentNull_Stream"));
             if (!stream.CanWrite)
-                throw new ArgumentException(GetResourceString("Argument_StreamNotWritable"));
+                throw new ArgumentException(GetResourceString("Argument_StreamNotWritable"),
+                    nameof(stream));
             if (encoding == null)
                 encoding = System.Text.Encoding.UTF8;
 
@@ -466,7 +477,8 @@ namespace System.Security.Activation
         public static IPrintableEncoding HexadeciamlEncoding => new Base16Encoding();
 
         /// <summary>
-        ///     Creates an instance of the custom encoding class, which implements the <see cref="IPrintableEncoding" /> interface,
+        ///     Creates an instance of the custom encoding class, 
+        ///     which implements the <see cref="IPrintableEncoding" /> interface,
         ///     based on the passed alphabet string.
         /// </summary>
         /// <param name="alphabet">
@@ -479,7 +491,8 @@ namespace System.Security.Activation
         ///     The <paramref name="alphabet" /> parameter is null.
         /// </exception>
         /// <exception cref="ArgumentException">
-        ///     The <paramref name="alphabet" /> parameter was either an empty string, contained duplicates, or contained only spaces.
+        ///     The <paramref name="alphabet" /> parameter was either an empty string, 
+        ///     contained duplicates, or contained only spaces.
         /// </exception>
         public static IPrintableEncoding CreateEncoding(string alphabet) => new CustomEncoding(alphabet);
 
