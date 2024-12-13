@@ -170,12 +170,12 @@ namespace System.Security.Cryptography
         // Returns the final hash value.
         protected override unsafe byte[] HashFinal()
         {
-            byte[] hashValue = new byte[4];
-            fixed (byte* buffer = hashValue)
+            byte[] hashValue = new byte[4] {0, 0, 0, 0};
+            fixed (uint* buffer = hashValue)
             {
                 for (var i = 0; i < _buffer.Length; i++)
                 {
-                    *(uint*)buffer ^= _buffer[i];
+                    buffer ^= _buffer[i];
                 }
             }
             Initialize();
